@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সদস্য অনুসন্ধান - বন্ধু কল্যাণ সংস্থা</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* সাজেশন বক্সের ডিজাইন */
+        #suggestion-box {
+            position: absolute;
+            z-index: 1000;
+            width: 92%; /* ইনপুট বক্সের প্রস্থের সাথে সামঞ্জস্যপূর্ণ */
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .suggestion-item:hover { background-color: #f8f9fa; color: #2c3e50; }
+        
+        .profile-card {
+            display: none;
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .balance-badge {
+            font-size: 1.5rem;
+            background: #f1c40f;
+            color: #2c3e50;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="dashboard.html">বন্ধু কল্যাণ সংস্থা</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a>
+            <a class="nav-link" href="payment.html">টাকা জমা</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 mb-2 position-relative">
+                <h3 class="text-center mb-4">সদস্যের প্রোফাইল খুঁজুন</h3>
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="নাম বা আইডি লিখুন..." autocomplete="off">
+                    <button class="btn btn-primary text-white" onclick="showProfileManually()">খুঁজুন</button>
+                </div>
+                <div id="suggestion-box"></div>
+                <div id="searchStatus" class="mt-2 text-center text-danger small"></div>
+            </div>
+
+            <div id="profileCard" class="card profile-card">
+                <div class="profile-header">
+                    <i class="fas fa-user-circle fa-5x mb-3"></i>
+                    <h2 id="disp-name">সদস্যের নাম</h2>
+                    <p id="disp-id" class="mb-0">BK-000</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row text-center mb-4">
+                        <div class="col">
+                            <small class="text-muted d-block">মোট জমার পরিমাণ</small>
+                            <div class="balance-badge" id="disp-deposit">0.00</div>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="fas fa-phone me-2 text-primary"></i> <strong>মোবাইল:</strong> <span id="disp-phone"></span></li>
+                        <li class="list-group-item"><i class="fas fa-map-marker-alt me-2 text-danger"></i> <strong>ঠিকানা:</strong> <span id="disp-address"></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzGNMAyXw-jL45vgN997FTTvk3ddPuZaH_QO3unK-yWggu2BP7V3hb7UY2SWJlkh0jXEg/exec'; 
+    let allMembers = [];
+
+    // পেজ লোড হলে ডাটা আনা
+    window.onload = function() {
+        fetch(scriptURL)
+            .then(res => res.json())
+            .then(data => { allMembers = data; })
+            .catch(err => console.error("ডাটা লোড সমস্যা:", err));
+    };
+
+    const searchInput = document.getElementById('searchInput');
+    const suggestionBox = document.getElementById('suggestion-box');
+
+    // টাইপ করার সময় সাজেশন দেখানো
+    searchInput.addEventListener('input', function() {
+        const value = this.value.trim().toLowerCase();
+        suggestionBox.innerHTML = '';
+        
+        if (value.length > 0) {
+            const filtered = allMembers.filter(m => 
+                String(m.memberId).toLowerCase().includes(value) || 
+                String(m.name).toLowerCase().includes(value)
+            );
+
+            if (filtered.length > 0) {
+                suggestionBox.style.display = 'block';
+                filtered.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `<strong>${m.memberId}</strong> - ${m.name}`;
+                    div.onclick = function() {
+                        searchInput.value = m.memberId;
+                        suggestionBox.style.display = 'none';
+                        displayMemberProfile(m); // সিলেক্ট করার সাথে সাথে প্রোফাইল দেখানো
+                    };
+                    suggestionBox.appendChild(div);
+                });
+            } else {
+                suggestionBox.style.display = 'none';
+            }
+        } else {
+            suggestionBox.style.display = 'none';
+            document.getElementById('profileCard').style.display = 'none';
+        }
+    });
+
+    // প্রোফাইল দেখানোর ফাংশন
+    function displayMemberProfile(member) {
+        const card = document.getElementById('profileCard');
+        document.getElementById('disp-name').innerText = member.name;
+        document.getElementById('disp-id').innerText = "আইডি: " + member.memberId;
+        document.getElementById('disp-phone').innerText = member.phone;
+        document.getElementById('disp-address').innerText = member.address;
+        document.getElementById('disp-deposit').innerText = member.deposit + "/-";
+        card.style.display = 'block';
+    }
+
+    // বাটন ক্লিক করে খোঁজা (যদি কেউ টাইপ করে এন্টার দেয়)
+    function showProfileManually() {
+        const idInput = searchInput.value.trim().toUpperCase();
+        const member = allMembers.find(m => String(m.memberId).toUpperCase() === idInput);
+        if (member) {
+            displayMemberProfile(member);
+            suggestionBox.style.display = 'none';
+        } else {
+            alert("সদস্য পাওয়া যায়নি!");
+        }
+    }
+
+    // বক্সের বাইরে ক্লিক করলে সাজেশন বন্ধ করা
+    document.addEventListener('click', function (e) {
+        if (e.target !== searchInput) {
+            suggestionBox.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

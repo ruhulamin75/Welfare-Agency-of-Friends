@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার প্রোফাইল - বন্ধু কল্যাণ সংস্থা</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            background-color: #f4f7f6; 
+            color: #2c3e50;
+        }
+        .profile-container { max-width: 500px; margin: 30px auto; }
+        .card-main {
+            border: none;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .profile-pic-box {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            margin: -50px auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            color: #1e3c72;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 5px solid white;
+        }
+        .data-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .data-box:hover { background: #eef2f3; }
+        .amount-text { font-size: 28px; color: #27ae60; font-weight: 700; }
+        .logout-btn { border-radius: 50px; font-weight: 600; padding: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container profile-container">
+    <div class="card card-main">
+        <div class="header-gradient text-center">
+            <h4 class="mb-0 fw-bold">সদস্য প্রোফাইল</h4>
+        </div>
+        
+        <div class="profile-pic-box">
+            <i class="fas fa-user-circle"></i>
+        </div>
+
+        <div class="card-body p-4 pt-0 text-center">
+            <h3 id="u-name" class="fw-bold mb-1">...</h3>
+            <p id="u-id" class="badge bg-primary px-3 py-2 rounded-pill mb-4">আইডি: ...</p>
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="data-box border-start border-success border-5 text-center">
+                        <small class="text-muted d-block fw-bold">মোট জমানো টাকা</small>
+                        <span class="amount-text">৳ <span id="u-deposit">0.00</span></span>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="data-box border-start border-info border-5 d-flex align-items-center justify-content-between">
+                        <div class="text-start">
+                            <small class="text-muted d-block fw-bold">সর্বশেষ জমা</small>
+                            <h6 id="u-last-date" class="mb-0 fw-bold text-info">...</h6>
+                        </div>
+                        <i class="fas fa-calendar-check fa-2x text-info opacity-50"></i>
+                    </div>
+                </div>
+
+                <div class="col-12 text-start px-3">
+                    <p class="mb-2"><i class="fas fa-phone-alt me-2 text-primary"></i> <strong>মোবাইল:</strong> <span id="u-phone"></span></p>
+                    <p class="mb-4"><i class="fas fa-map-marker-alt me-2 text-danger"></i> <strong>ঠিকানা:</strong> <span id="u-address"></span></p>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="btn btn-outline-danger w-100 logout-btn">
+                <i class="fas fa-sign-out-alt me-2"></i>লগআউট করুন
+            </button>
+        </div>
+    </div>
+    <p class="text-center mt-4 text-muted small">© বন্ধু কল্যাণ সংস্থা - ২০২৬</p>
+</div>
+
+<script>
+    // পেজ লোড হলে ডাটা বসানো
+    window.onload = function() {
+        const member = JSON.parse(localStorage.getItem('loggedInMember'));
+
+        if (!member) {
+            window.location.href = "member-login.html";
+        } else {
+            document.getElementById('u-name').innerText = member.name;
+            document.getElementById('u-id').innerText = "আইডি: " + member.memberId;
+            document.getElementById('u-phone').innerText = member.phone;
+            document.getElementById('u-address').innerText = member.address;
+            document.getElementById('u-deposit').innerText = member.deposit;
+            document.getElementById('u-last-date').innerText = member.lastDeposit;
+        }
+    };
+
+    function logout() {
+        localStorage.removeItem('loggedInMember');
+        window.location.href = "member-login.html";
+    }
+</script>
+
+</body>
+</html>
