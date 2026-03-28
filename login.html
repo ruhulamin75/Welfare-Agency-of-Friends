@@ -34,16 +34,16 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  // আপনার ফায়ারবেস কনফিগারেশন (এখানে আপনার নিজের তথ্যগুলো বসান)
+  // আপনার ফায়ারবেস কনফিগারেশন
   const firebaseConfig = {
-  apiKey: "AIzaSyD9geYhKoJMHzn0K5R5JawJiAQ3PkJX0-c",
-  authDomain: "welfare-agency-of-friends.firebaseapp.com",
-  projectId: "welfare-agency-of-friends",
-  storageBucket: "welfare-agency-of-friends.firebasestorage.app",
-  messagingSenderId: "232183840019",
-  appId: "1:232183840019:web:bb6bf500e98a9137a92ee6",
-  measurementId: "G-B6MJ6S2S95"
-};
+    apiKey: "AIzaSyD9geYhKoJMHzn0K5R5JawJiAQ3PkJX0-c",
+    authDomain: "welfare-agency-of-friends.firebaseapp.com",
+    projectId: "welfare-agency-of-friends",
+    storageBucket: "welfare-agency-of-friends.firebasestorage.app",
+    messagingSenderId: "232183840019",
+    appId: "1:232183840019:web:bb6bf500e98a9137a92ee6",
+    measurementId: "G-B6MJ6S2S95"
+  };
 
   // ফায়ারবেস ইনিশিয়ালাইজ করা
   const app = initializeApp(firebaseConfig);
@@ -54,7 +54,7 @@
   const errorMessage = document.getElementById('error-message');
 
   loginForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // পেজ রিলোড বন্ধ করা
+    e.preventDefault(); 
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -62,12 +62,17 @@
     // ফায়ারবেস দিয়ে লগইন চেক করা
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // লগইন সফল হলে ড্যাশবোর্ড বা ইনডেক্স পেজে পাঠিয়ে দেওয়া
+        
+        // --- ১নং পয়েন্ট: সুরক্ষা ফ্ল্যাগ সেট করা ---
+        // এটি ব্রাউজারে একটি 'সংকেত' হিসেবে থাকবে যে অ্যাডমিন লগইন করেছেন
+        localStorage.setItem('adminLoggedIn', 'true'); 
+        
         alert("সফলভাবে লগইন হয়েছে!");
+        
+        // ড্যাশবোর্ডে পাঠিয়ে দেওয়া
         window.location.href = "dashboard.html"; 
       })
       .catch((error) => {
-        // ভুল ইমেইল বা পাসওয়ার্ড দিলে মেসেজ দেখানো
         errorMessage.innerText = "ভুল ইমেইল অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।";
       });
   });
