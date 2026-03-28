@@ -1,6 +1,163 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সদস্য প্রোফাইল - বন্ধু কল্যাণ সংস্থা</title>
+
+    <script>
+        const memberData = JSON.parse(localStorage.getItem('loggedInMember'));
+        if (!memberData) {
+            window.location.replace("index.html");
+        }
+        // ব্যাক বাটন প্রোটেকশন
+        window.history.forward();
+        function noBack() { window.history.forward(); }
+    </script>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --waf-blue: #084382;
+            --waf-green: #74dc2c;
+            --dark-blue: #052c54;
+        }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; margin: 0; }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--waf-blue) 0%, var(--dark-blue) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .profile-img-container {
+            width: 110px;
+            height: 110px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -55px auto 15px;
+            font-size: 55px;
+            color: var(--waf-blue);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 4px solid #fff;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            margin-top: 25px;
+            border: 1px solid #eee;
+        }
+
+        .balance-section {
+            background: linear-gradient(to right, #f9fff0, #f0fdf4);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 2px dashed var(--waf-green);
+            margin-bottom: 30px;
+        }
+
+        .label-text { font-size: 14px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .value-text { font-size: 18px; font-weight: 700; color: #333; margin-top: 5px; }
+        
+        .logout-btn {
+            background: transparent;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+            border-radius: 50px;
+            padding: 12px 35px;
+            font-weight: 700;
+            transition: 0.3s;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 250px;
+        }
+        .logout-btn:hover { background: #e74c3c; color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3); }
+
+        .brand-logo-small { height: 40px; margin-bottom: 10px; }
+    </style>
+</head>
+<body onload="noBack();">
+
+<div class="profile-header">
+    <div class="container">
+        <img src="https://drive.google.com/uc?export=view&id=1-zvnNiBAR3arEWlegDh_WP1NELCm--X2" alt="Logo" class="brand-logo-small">
+        <h2 class="fw-bold">বন্ধু কল্যাণ সংস্থা</h2>
+        <p class="opacity-75">আপনার ব্যক্তিগত সঞ্চয় প্রোফাইল</p>
+    </div>
+</div>
+
+<div class="container mb-5 pb-4">
+    <div class="profile-img-container">
+        <i class="fas fa-user-circle"></i>
+    </div>
+
+    <div class="text-center">
+        <h3 id="mName" class="fw-bold text-dark mb-1">সদস্যের নাম</h3>
+        <span class="badge rounded-pill px-3 py-2" style="background-color: var(--waf-blue);">আইডি: <span id="mId">--</span></span>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="info-card">
+                <div class="balance-section">
+                    <p class="label-text mb-1" style="color: #2e7d32;">আপনার মোট জমানো টাকা</p>
+                    <h1 class="fw-bold mb-0" style="color: var(--waf-blue);">৳ <span id="mDeposit">0</span></h1>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-6 text-center border-end">
+                        <p class="label-text">মোবাইল নম্বর</p>
+                        <p id="mPhone" class="value-text">--</p>
+                    </div>
+                    <div class="col-6 text-center">
+                        <p class="label-text">শেষ জমার তারিখ</p>
+                        <p id="mLastDate" class="value-text text-primary">--</p>
+                    </div>
+                    
+                    <div class="col-12">
+                        <hr class="opacity-10">
+                        <div class="px-2">
+                            <p class="label-text"><i class="fas fa-map-marker-alt me-2"></i>বর্তমান ঠিকানা</p>
+                            <p id="mAddress" class="value-text text-muted" style="font-size: 16px;">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="logout-btn" onclick="memberLogout()">
+                    <i class="fas fa-sign-out-alt me-2"></i> প্রোফাইল থেকে বের হোন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-center mt-5 text-muted small">© ২০২৬ বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত</p>
+</div>
+
 <script>
+    // ১. লোকাল স্টোরেজ থেকে ডাটা লোড করা
     window.onload = function() {
         const data = JSON.parse(localStorage.getItem('loggedInMember'));
+
         if (data) {
             document.getElementById('mName').innerText = data.name || "সদস্য";
             document.getElementById('mId').innerText = data.memberId || "--";
@@ -8,14 +165,26 @@
             document.getElementById('mDeposit').innerText = data.deposit || "0";
             document.getElementById('mAddress').innerText = data.address || "ঠিকানা পাওয়া যায়নি";
 
-            // Apps Script থেকে আসা 'lastDate' এখানে সেট করা হয়েছে
+            // Apps Script থেকে আসা 'lastDate' প্রপার্টি চেক করা
             document.getElementById('mLastDate').innerText = data.lastDate || "এখনো জমা হয়নি";
+        } else {
+            // যদি ডাটা না থাকে (সরাসরি লিঙ্ক দিয়ে ঢুকলে)
+            window.location.replace("index.html");
         }
     };
+
+    // ২. লগআউট ফাংশন
     function memberLogout() {
-        if (confirm("লগআউট করবেন?")) {
+        if (confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
+            localStorage.removeItem('loggedInMember');
             localStorage.clear();
+            sessionStorage.clear();
+            // ইনডেক্স পেজে পাঠিয়ে দেবে
             window.location.replace("index.html");
         }
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
