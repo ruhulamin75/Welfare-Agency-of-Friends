@@ -3,151 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আমার প্রোফাইল - বন্ধু কল্যাণ সংস্থা</title>
+    <title>সদস্য প্রোফাইল - বন্ধু কল্যাণ সংস্থা</title>
+    
+    <script>
+        const memberData = JSON.parse(localStorage.getItem('loggedInMember'));
+        if (!memberData) {
+            window.location.replace("member-login.html");
+        }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        body { 
-            font-family: 'Hind Siliguri', sans-serif; 
-            background-color: #f4f7f6; 
-            color: #2c3e50;
-        }
-        .profile-container { max-width: 500px; margin: 30px auto; }
-        .card-main {
-            border: none;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            background: #fff;
-        }
-        .header-gradient {
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; margin: 0; }
+        .profile-header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            height: 130px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             color: white;
+            padding: 50px 20px;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
         }
-        .profile-pic-box {
+        .profile-img {
             width: 100px;
             height: 100px;
             background: white;
             border-radius: 50%;
-            margin: -50px auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 45px;
+            margin: -50px auto 15px;
+            font-size: 50px;
             color: #1e3c72;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 5px solid white;
         }
-        .data-box {
-            background: #f8f9fa;
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        .balance-box {
+            background: #e8f5e9;
             border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: 0.3s;
+            padding: 20px;
+            text-align: center;
+            border: 1px dashed #2e7d32;
         }
-        .data-box:hover { background: #eef2f3; }
-        .amount-text { font-size: 28px; color: #27ae60; font-weight: 700; }
-        .logout-btn { border-radius: 50px; font-weight: 600; padding: 12px; }
+        .label-text { font-size: 14px; color: #777; font-weight: 600; }
+        .value-text { font-size: 18px; font-weight: 700; color: #333; }
+        .logout-btn {
+            background: #fff;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 700;
+            transition: 0.3s;
+            margin-top: 30px;
+        }
+        .logout-btn:hover { background: #e74c3c; color: white; }
     </style>
 </head>
 <body>
 
-<div class="container profile-container">
-    <div class="card card-main">
-        <div class="header-gradient text-center">
-            <h4 class="mb-0 fw-bold">সদস্য প্রোফাইল</h4>
-        </div>
-        
-        <div class="profile-pic-box">
-            <i class="fas fa-user-circle"></i>
-        </div>
+<div class="profile-header">
+    <div class="container">
+        <h2 class="fw-bold">বন্ধু কল্যাণ সংস্থা</h2>
+        <p class="opacity-75">সদস্য ড্যাশবোর্ড</p>
+    </div>
+</div>
 
-        <div class="card-body p-4 pt-0 text-center">
-            <h3 id="u-name" class="fw-bold mb-1">...</h3>
-            <p id="u-id" class="badge bg-primary px-3 py-2 rounded-pill mb-4">আইডি: ...</p>
+<div class="container mb-5">
+    <div class="profile-img">
+        <i class="fas fa-user-circle"></i>
+    </div>
+    
+    <div class="text-center">
+        <h3 id="mName" class="fw-bold text-dark">লোড হচ্ছে...</h3>
+        <span class="badge bg-primary rounded-pill px-3 py-2">আইডি: <span id="mId">--</span></span>
+    </div>
 
-            <div class="row g-3">
-                <div class="col-12">
-                    <div class="data-box border-start border-success border-5 text-center">
-                        <small class="text-muted d-block fw-bold">মোট জমানো টাকা</small>
-                        <span class="amount-text">৳ <span id="u-deposit">0.00</span></span>
-                    </div>
-                </div>
-                
-                <div class="col-12">
-                    <div class="data-box border-start border-info border-5 d-flex align-items-center justify-content-between">
-                        <div class="text-start">
-                            <small class="text-muted d-block fw-bold">সর্বশেষ জমা</small>
-                            <h6 id="u-last-date" class="mb-0 fw-bold text-info">...</h6>
-                        </div>
-                        <i class="fas fa-calendar-check fa-2x text-info opacity-50"></i>
-                    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="info-card">
+                <div class="balance-box mb-4">
+                    <p class="label-text mb-1 text-success text-uppercase">আপনার মোট জমা</p>
+                    <h1 class="fw-bold text-success mb-0">৳ <span id="mDeposit">0</span></h1>
                 </div>
 
-                <div class="col-12 text-start px-3">
-                    <p class="mb-2"><i class="fas fa-phone-alt me-2 text-primary"></i> <strong>মোবাইল:</strong> <span id="u-phone"></span></p>
-                    <p class="mb-4"><i class="fas fa-map-marker-alt me-2 text-danger"></i> <strong>ঠিকানা:</strong> <span id="u-address"></span></p>
+                <div class="row g-4 text-center">
+                    <div class="col-6 border-end">
+                        <p class="label-text">মোবাইল নম্বর</p>
+                        <p id="mPhone" class="value-text">--</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="label-text">শেষ জমার তারিখ</p>
+                        <p id="mLastDate" class="value-text text-primary">--</p>
+                    </div>
+                    <hr>
+                    <div class="col-12 text-start px-4">
+                        <p class="label-text"><i class="fas fa-map-marker-alt me-2"></i>বর্তমান ঠিকানা</p>
+                        <p id="mAddress" class="value-text" style="font-size: 16px;">--</p>
+                    </div>
                 </div>
             </div>
-
-            <button onclick="logout()" class="btn btn-outline-danger w-100 logout-btn">
-                <i class="fas fa-sign-out-alt me-2"></i>লগআউট করুন
-            </button>
         </div>
     </div>
-    <p class="text-center mt-4 text-muted small">© বন্ধু কল্যাণ সংস্থা - ২০২৬</p>
+
+    <div class="text-center">
+        <button class="logout-btn" onclick="memberLogout()">
+            <i class="fas fa-sign-out-alt me-2"></i> লগআউট করুন
+        </button>
+    </div>
+    
+    <p class="text-center mt-5 text-muted small">© ২০২৬ বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত</p>
 </div>
 
 <script>
+    // লোকাল স্টোরেজ থেকে ডাটা নিয়ে পেজে দেখানো
     window.onload = function() {
-    // ব্রাউজারের মেমোরি থেকে ডাটা চেক করা
-    const member = JSON.parse(localStorage.getItem('loggedInMember'));
-
-    // যদি মেমোরিতে কোনো মেম্বারের তথ্য না পাওয়া যায় (অর্থাৎ সে লগইন করেনি)
-    if (!member) {
-        alert("দয়া করে আগে লগইন করুন!"); // ইউজারকে মেসেজ দেওয়া
-        window.location.href = "member-login.html"; // তাকে লগইন পেজে পাঠিয়ে দেওয়া
-        return; // নিচের বাকি কোড আর কাজ করবে না
-    }
-
-    // যদি মেম্বার লগইন করা থাকে, তবেই নিচের ডাটাগুলো পেজে দেখাবে
-    document.getElementById('u-name').innerText = member.name;
-    document.getElementById('u-id').innerText = "আইডি: " + member.memberId;
-    document.getElementById('u-deposit').innerText = member.deposit;
-    document.getElementById('u-last-date').innerText = member.lastDeposit;
-    // ... বাকি সব আইডি বসান
-};
-
-    // পেজ লোড হলে ডাটা বসানো
-    window.onload = function() {
-        const member = JSON.parse(localStorage.getItem('loggedInMember'));
-
-        if (!member) {
-            window.location.href = "member-login.html";
-        } else {
-            document.getElementById('u-name').innerText = member.name;
-            document.getElementById('u-id').innerText = "আইডি: " + member.memberId;
-            document.getElementById('u-phone').innerText = member.phone;
-            document.getElementById('u-address').innerText = member.address;
-            document.getElementById('u-deposit').innerText = member.deposit;
-            document.getElementById('u-last-date').innerText = member.lastDeposit;
+        const data = JSON.parse(localStorage.getItem('loggedInMember'));
+        
+        if (data) {
+            document.getElementById('mName').innerText = data.name || "সদস্য";
+            document.getElementById('mId').innerText = data.memberId || "--";
+            document.getElementById('mPhone').innerText = data.phone || "--";
+            document.getElementById('mDeposit').innerText = data.deposit || "0";
+            document.getElementById('mAddress').innerText = data.address || "ঠিকানা পাওয়া যায়নি";
+            
+            // আপনার শিটের কলাম নাম অনুযায়ী 'Last Date' চেক করা
+            document.getElementById('mLastDate').innerText = data['Last Date'] || data.lastDate || "তথ্য নেই";
         }
     };
 
-    function logout() {
-    // ১. ব্রাউজারের মেমোরি থেকে মেম্বারের তথ্য মুছে ফেলা
-    localStorage.removeItem('loggedInMember');
-    
-    // ২. সরাসরি index.html পেজে পাঠিয়ে দেওয়া
-    window.location.href = "index.html";
-}
+    // সদস্য লগআউট ফাংশন
+    function memberLogout() {
+        if (confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
+            localStorage.removeItem('loggedInMember');
+            // সদস্য লগইন পেজে পাঠিয়ে দেবে
+            window.location.replace("member-login.html");
+        }
+    }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
