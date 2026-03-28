@@ -1,210 +1,75 @@
 <!DOCTYPE html>
 <html lang="bn">
-<head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <script>
-    // ১. প্রথমেই চেক করবে সে লগইন করা কি না
-    if (localStorage.getItem('adminLoggedIn') !== 'true') {
-        // যদি লগইন করা না থাকে, তবে তাকে ধাক্কা দিয়ে লগইন পেজে পাঠিয়ে দেবে
-        window.location.replace("index.html");
-    }
-
-    // ২. ব্রাউজার ক্যাশ ও ব্যাক বাটন লক করার জন্য
-    window.history.forward();
-    function noBack() {
+    <title>ড্যাশবোর্ড - বন্ধু কল্যাণ সংস্থা</title>
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') window.location.replace("index.html");
         window.history.forward();
-    }
-</script>
-
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<title>ড্যাশবোর্ড - বন্ধু কল্যাণ সংস্থা</title>
+        function noBack() { window.history.forward(); }
+    </script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; margin: 0; }
-        .navbar { background-color: #1e1e2d; border-bottom: 2px solid #f1c40f; }
-        .navbar-brand { font-weight: 700; color: white !important; }
-
-        .header-section {
-            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 40px 20px 70px 20px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            text-align: center;
-        }
-
-        /* সার্চ ও সাজেশন ডিজাইন */
-        .search-container { margin-top: -30px; position: relative; z-index: 100; }
-        .search-input {
-            border-radius: 12px;
-            padding: 15px 20px;
-            border: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        #suggestion-box {
-            position: absolute;
-            width: 100%;
-            background: white;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-height: 250px;
-            overflow-y: auto;
-            display: none;
-            z-index: 999;
-            margin-top: 2px;
-        }
-        .suggestion-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            border-bottom: 1px solid #f1f1f1;
-            transition: 0.2s;
-            text-align: left;
-        }
-        .suggestion-item:hover { background-color: #f8f9fa; color: #1e3c72; }
-
-        /* বক্স বাটন ডিজাইন */
-        .menu-card {
-            background: white;
-            border-radius: 18px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: 0.3s;
-            border: 1px solid #eee;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-        }
-        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .menu-icon { font-size: 2.8rem; margin-bottom: 10px; }
-        .btn-text { font-size: 1.1rem; font-weight: 700; color: #333; }
-
-        .color-list { color: #3498db; }
-        .color-payment { color: #2ecc71; }
-        .color-add { color: #f39c12; }
-        .color-logout { color: #e74c3c; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
+        .header-section { background: linear-gradient(180deg, #084382 0%, #1b9cfc 100%); color: white; padding: 50px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .search-input { border-radius: 12px; padding: 15px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-top: -30px; }
+        .menu-card { background: white; border-radius: 18px; padding: 25px; text-align: center; text-decoration: none; display: block; transition: 0.3s; border: 1px solid #eee; }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .menu-icon { font-size: 2.5rem; margin-bottom: 10px; color: #084382; }
+        #suggestion-box { background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; position: absolute; width: 100%; z-index: 1000; margin-top: 5px; }
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
-<body>
-
-<nav class="navbar navbar-dark sticky-top">
-    <div class="container justify-content-center">
-        <a class="navbar-brand" href="#"><i class="fas fa-university me-2"></i> বন্ধু কল্যাণ সংস্থা</a>
-    </div>
-</nav>
-
+<body onload="noBack();">
 <div class="header-section shadow-sm">
-    <div class="container">
-        <h2 class="fw-bold mb-1">অ্যাডমিন প্যানেল</h2>
-        <p class="opacity-75 mb-0 small">দ্রুত সদস্য বা কার্যক্রম পরিচালনা করুন</p>
-    </div>
+    <h2 class="fw-bold">অ্যাডমিন প্যানেল</h2>
+    <p class="opacity-75">বন্ধু কল্যাণ সংস্থা</p>
 </div>
-
-<div class="container search-container">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-11 col-md-8 col-lg-6 position-relative">
-            <input type="text" id="memberSearch" class="form-control search-input" placeholder="সদস্যের নাম বা আইডি লিখুন..." autocomplete="off">
+        <div class="col-md-8 position-relative">
+            <input type="text" id="memberSearch" class="form-control search-input" placeholder="সদস্যের নাম বা আইডি দিয়ে সার্চ করুন...">
             <div id="suggestion-box"></div>
         </div>
     </div>
 </div>
-
-<div class="container pb-5 mt-4">
+<div class="container mt-5 pb-5">
     <div class="row g-3">
-        <div class="col-6 col-md-3">
-            <a href="list.html" class="menu-card">
-                <i class="fas fa-address-book menu-icon color-list"></i>
-                <span class="btn-text">সদস্য তালিকা</span>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="payment.html" class="menu-card">
-                <i class="fas fa-hand-holding-usd menu-icon color-payment"></i>
-                <span class="btn-text">টাকা জমা নিন</span>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="add-member.html" class="menu-card">
-                <i class="fas fa-user-plus menu-icon color-add"></i>
-                <span class="btn-text">নতুন সদস্য</span>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="#" onclick="logout()" class="menu-card">
-                <i class="fas fa-power-off menu-icon color-logout"></i>
-                <span class="btn-text color-logout">লগআউট</span>
-            </a>
-        </div>
+        <div class="col-6 col-md-3"><a href="list.html" class="menu-card"><i class="fas fa-users menu-icon"></i><br><span class="fw-bold text-dark">সদস্য তালিকা</span></a></div>
+        <div class="col-6 col-md-3"><a href="payment.html" class="menu-card"><i class="fas fa-hand-holding-usd menu-icon text-success"></i><br><span class="fw-bold text-dark">টাকা জমা নিন</span></a></div>
+        <div class="col-6 col-md-3"><a href="add-member.html" class="menu-card"><i class="fas fa-user-plus menu-icon text-warning"></i><br><span class="fw-bold text-dark">নতুন সদস্য</span></a></div>
+        <div class="col-6 col-md-3"><a href="#" onclick="logout()" class="menu-card"><i class="fas fa-power-off menu-icon text-danger"></i><br><span class="fw-bold text-danger">লগআউট</span></a></div>
     </div>
 </div>
-
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzGNMAyXw-jL45vgN997FTTvk3ddPuZaH_QO3unK-yWggu2BP7V3hb7UY2SWJlkh0jXEg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz2lZ6KwOU2ek7Kyk7E1ugj1hAnNpeoG3ti0eBAl5QoIHWGYY1r21_8UVoQ8yCfpXa1-Q/exec';
     let members = [];
-
-    // ডাটা লোড করা
     async function fetchMembers() {
-        try {
-            const response = await fetch(scriptURL);
-            members = await response.json();
-        } catch (error) { console.log("Error loading members"); }
+        try { const r = await fetch(scriptURL); members = await r.json(); } catch(e) { console.log("Error"); }
     }
-
-    const searchInput = document.getElementById('memberSearch');
-    const suggestionBox = document.getElementById('suggestion-box');
-
-    searchInput.addEventListener('input', function() {
-        const val = this.value.trim().toLowerCase();
-        suggestionBox.innerHTML = '';
-        if (!val) { suggestionBox.style.display = 'none'; return; }
-
-        const filtered = members.filter(m => 
-            m.name.toLowerCase().includes(val) || m.memberId.toString().includes(val)
-        );
-
-        if (filtered.length > 0) {
+    document.getElementById('memberSearch').addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        const box = document.getElementById('suggestion-box');
+        box.innerHTML = '';
+        if(!val) { box.style.display='none'; return; }
+        const filtered = members.filter(m => m.name.toLowerCase().includes(val) || m.memberId.toString().includes(val));
+        if(filtered.length > 0) {
             filtered.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
-                div.innerHTML = `<i class="fas fa-user me-2 text-muted"></i> <strong>${m.memberId}</strong> - ${m.name}`;
-                div.onclick = function() {
-                    window.location.href = `list.html?search=${m.memberId}`;
-                };
-                suggestionBox.appendChild(div);
+                div.innerHTML = `<strong>${m.memberId}</strong> - ${m.name}`;
+                div.onclick = () => window.location.href = `list.html?search=${m.memberId}`;
+                box.appendChild(div);
             });
-            suggestionBox.style.display = 'block';
-        } else {
-            suggestionBox.style.display = 'none';
+            box.style.display = 'block';
         }
     });
-
-    // বাইরের কোথাও ক্লিক করলে সাজেশন বক্স বন্ধ করা
-    document.addEventListener('click', function(e) {
-        if (e.target !== searchInput) suggestionBox.style.display = 'none';
-    });
-
-      function logout() {
-    if(confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
-        // ১. সব সেশন ডাটা মুছে ফেলা
-        localStorage.removeItem('adminLoggedIn');
-        localStorage.clear();
-        sessionStorage.clear();
-
-        // ২. ইনডেক্স পেজে পাঠিয়ে দেওয়া (replace ব্যবহার করুন)
-        window.location.replace("index.html"); 
-    }
-}
+    function logout() { if(confirm("লগআউট করবেন?")) { localStorage.clear(); window.location.replace("index.html"); } }
     window.onload = fetchMembers;
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
