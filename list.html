@@ -12,75 +12,88 @@
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
         .navbar { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
-        /* প্রোফাইল কার্ড স্টাইল */
+        /* প্রোফাইল কার্ড স্টাইল (সার্চ রেজাল্ট ভিউ) */
         #singleProfileView {
             display: none;
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border-left: 6px solid #1e3c72;
+            border-left: 8px solid #1e3c72;
             margin-top: 20px;
             margin-bottom: 30px;
         }
-        .info-label { font-size: 14px; color: #888; font-weight: 600; margin-bottom: 2px; }
+        .info-label { font-size: 13px; color: #888; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
         .info-value { font-size: 17px; font-weight: 700; color: #333; }
+        .text-date { color: #1e3c72; }
 
         /* টেবিল স্টাইল */
         .table-card { border-radius: 15px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
         .table thead { background: #1e3c72; color: white; }
-        .search-box { border-radius: 50px; padding: 10px 20px; border: 1px solid #ddd; }
-        .btn-action { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; border: none; }
+        .search-box { border-radius: 50px; padding: 10px 25px; border: 1px solid #ddd; transition: 0.3s; }
+        .search-box:focus { border-color: #1e3c72; box-shadow: 0 0 10px rgba(30, 60, 114, 0.1); }
+        .btn-action { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: 0.2s; }
+        .btn-action:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container text-center">
-        <a class="navbar-brand fw-bold" href="dashboard.html">বন্ধু কল্যাণ সংস্থা</a>
+        <a class="navbar-brand fw-bold" href="dashboard.html">
+            <i class="fas fa-university me-2 text-warning"></i>বন্ধু কল্যাণ সংস্থা
+        </a>
     </div>
 </nav>
 
 <div class="container mt-4 pb-5">
-    <div class="row mb-3 align-items-center">
-        <div class="col-md-6"><h4 class="fw-bold text-primary">সদস্য তথ্য ও ঠিকানা</h4></div>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6"><h4 class="fw-bold text-primary">সদস্য তথ্য অনুসন্ধান</h4></div>
         <div class="col-md-6 text-md-end">
-            <input type="text" id="searchInput" class="form-control search-box" placeholder="নাম বা আইডি দিয়ে খুঁজুন...">
+            <input type="text" id="searchInput" class="form-control search-box" placeholder="নাম বা আইডি দিয়ে তালিকা ফিল্টার করুন...">
         </div>
     </div>
 
-    <div id="singleProfileView">
+    <div id="singleProfileView" class="container">
         <div class="row align-items-center">
             <div class="col-md-2 text-center">
-                <i class="fas fa-user-circle fa-5x text-primary mb-3 mb-md-0"></i>
+                <i class="fas fa-user-circle fa-6x text-primary mb-3 mb-md-0"></i>
             </div>
             <div class="col-md-10">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 id="viewName" class="fw-bold mb-0">সদস্যের নাম</h3>
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="resetView()">সব তালিকা দেখুন</button>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 id="viewName" class="fw-bold mb-0 text-dark">সদস্যের নাম</h2>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="resetView()">সব তালিকা দেখুন</button>
                 </div>
                 <hr>
-                <div class="row">
-                    <div class="col-6 col-md-3 mb-3">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
                         <p class="info-label">সদস্য আইডি</p>
                         <p class="info-value" id="viewId">--</p>
                     </div>
-                    <div class="col-6 col-md-3 mb-3">
+                    <div class="col-6 col-md-3">
                         <p class="info-label">মোবাইল নম্বর</p>
                         <p class="info-value" id="viewPhone">--</p>
                     </div>
-                    <div class="col-12 col-md-3 mb-3">
-                        <p class="info-label">বর্তমান ঠিকানা</p>
-                        <p class="info-value" id="viewAddress">--</p>
+                    <div class="col-12 col-md-3">
+                        <p class="info-label">সর্বশেষ জমার তারিখ</p>
+                        <p class="info-value text-date" id="viewLastDate">--</p>
                     </div>
-                    <div class="col-6 col-md-3 mb-3">
+                    <div class="col-12 col-md-3">
                         <p class="info-label">মোট জমা</p>
                         <p class="info-value text-success" id="viewDeposit">৳ 0</p>
                     </div>
+                    <div class="col-12">
+                        <p class="info-label">বর্তমান ঠিকানা</p>
+                        <p class="info-value" id="viewAddress">--</p>
+                    </div>
                 </div>
-                <div class="text-end mt-2">
-                    <button class="btn btn-primary btn-sm rounded-pill px-3 me-1" id="editFromView"><i class="fas fa-edit me-1"></i>এডিট</button>
-                    <button class="btn btn-danger btn-sm rounded-pill px-3" id="deleteFromView"><i class="fas fa-trash me-1"></i>ডিলিট</button>
+                <div class="text-end mt-3">
+                    <button class="btn btn-primary btn-sm rounded-pill px-4 me-2 shadow-sm" id="editFromView">
+                        <i class="fas fa-edit me-1"></i> এডিট
+                    </button>
+                    <button class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm" id="deleteFromView">
+                        <i class="fas fa-trash me-1"></i> ডিলিট
+                    </button>
                 </div>
             </div>
         </div>
@@ -88,10 +101,10 @@
 
     <div class="table-card p-2" id="fullTableContainer">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>নাম</th>
+                        <th class="ps-3">নাম</th>
                         <th class="text-center">আইডি</th>
                         <th>ঠিকানা</th>
                         <th class="text-end">মোট জমা</th>
@@ -99,7 +112,9 @@
                     </tr>
                 </thead>
                 <tbody id="memberTableBody">
-                    <tr><td colspan="5" class="text-center py-5 text-muted">ডাটা লোড হচ্ছে...</td></tr>
+                    <tr><td colspan="5" class="text-center py-5 text-muted">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div> ডাটা লোড হচ্ছে...
+                    </td></tr>
                 </tbody>
             </table>
         </div>
@@ -108,36 +123,36 @@
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 20px;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
             <div class="modal-header bg-primary text-white" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title">তথ্য সংশোধন</h5>
+                <h5 class="modal-title fw-bold">তথ্য সংশোধন করুন</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <form id="editForm">
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">সদস্যের নাম</label>
-                        <input type="text" id="editName" class="form-control" required>
+                        <input type="text" id="editName" class="form-control rounded-3" required>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="form-label fw-bold small text-muted">আইডি</label>
-                            <input type="text" id="editId" class="form-control bg-light" readonly>
+                            <input type="text" id="editId" class="form-control bg-light rounded-3" readonly>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label fw-bold small text-muted">পাসওয়ার্ড</label>
-                            <input type="text" id="editPass" class="form-control" required>
+                            <input type="text" id="editPass" class="form-control rounded-3" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">মোবাইল নম্বর</label>
-                        <input type="text" id="editPhone" class="form-control" required>
+                        <input type="text" id="editPhone" class="form-control rounded-3" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">ঠিকানা</label>
-                        <textarea id="editAddress" class="form-control" rows="2"></textarea>
+                        <textarea id="editAddress" class="form-control rounded-3" rows="2" placeholder="পূর্ণাঙ্গ ঠিকানা লিখুন"></textarea>
                     </div>
-                    <button type="submit" id="updateBtn" class="btn btn-primary w-100 py-2 fw-bold rounded-pill">আপডেট সেভ করুন</button>
+                    <button type="submit" id="updateBtn" class="btn btn-primary w-100 py-2 fw-bold rounded-pill shadow-sm">সেভ করুন</button>
                 </form>
             </div>
         </div>
@@ -148,40 +163,52 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzGNMAyXw-jL45vgN997FTTvk3ddPuZaH_QO3unK-yWggu2BP7V3hb7UY2SWJlkh0jXEg/exec'; 
     let allMembers = [];
 
+    // ডাটা লোড করা
     async function loadMembers() {
         try {
             const res = await fetch(scriptURL);
             allMembers = await res.json();
             renderTable(allMembers);
-            checkURLSearch();
-        } catch (e) { console.log("Load failed"); }
+            checkURLSearch(); 
+        } catch (e) {
+            document.getElementById('memberTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">ডাটা লোড করতে ব্যর্থ হয়েছে।</td></tr>';
+        }
     }
 
+    // টেবিল রেন্ডার করা
     function renderTable(data) {
         const tbody = document.getElementById('memberTableBody');
         tbody.innerHTML = '';
         data.forEach((m, index) => {
             tbody.innerHTML += `
                 <tr>
-                    <td class="fw-bold text-nowrap">${m.name}</td>
-                    <td class="text-center">${m.memberId}</td>
-                    <td class="small text-muted">${m.address || 'নেই'}</td>
+                    <td class="fw-bold ps-3">${m.name}</td>
+                    <td class="text-center"><span class="badge bg-light text-dark border">${m.memberId}</span></td>
+                    <td class="small text-muted text-truncate" style="max-width: 150px;">${m.address || 'নেই'}</td>
                     <td class="text-end fw-bold text-success">৳ ${m.deposit}</td>
-                    <td class="text-center text-nowrap">
-                        <button class="btn btn-outline-primary btn-action me-1" onclick="openEditModal(${index})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-outline-danger btn-action" onclick="deleteMember('${m.memberId}')"><i class="fas fa-trash"></i></button>
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary btn-action me-1 shadow-sm" onclick="openEditModal(${index})" title="সংশোধন">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-action shadow-sm" onclick="deleteMember('${m.memberId}')" title="মুছে ফেলুন">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
             `;
         });
     }
 
+    // ড্যাশবোর্ড থেকে সার্চ করে আসলে প্রোফাইল ভিউ দেখানো
     function checkURLSearch() {
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('search');
-        if (searchQuery) showSingleMember(searchQuery);
+        if (searchQuery) {
+            showSingleMember(searchQuery);
+        }
     }
 
+    // একক সদস্যের তথ্য প্রদর্শন
     function showSingleMember(idOrName) {
         const member = allMembers.find(m => m.memberId.toString() === idOrName || m.name === idOrName);
         if (member) {
@@ -193,6 +220,7 @@
             document.getElementById('viewPhone').innerText = member.phone;
             document.getElementById('viewAddress').innerText = member.address || 'ঠিকানা দেওয়া নেই';
             document.getElementById('viewDeposit').innerText = '৳ ' + member.deposit;
+            document.getElementById('viewLastDate').innerText = member.lastDate || 'তথ্য নেই';
 
             const index = allMembers.indexOf(member);
             document.getElementById('editFromView').onclick = () => openEditModal(index);
@@ -202,6 +230,7 @@
 
     function resetView() { window.location.href = "list.html"; }
 
+    // এডিট মোডাল ওপেন
     function openEditModal(index) {
         const m = allMembers[index];
         document.getElementById('editName').value = m.name;
@@ -212,6 +241,7 @@
         new bootstrap.Modal(document.getElementById('editModal')).show();
     }
 
+    // এডিট ফর্ম সাবমিট
     document.getElementById('editForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('updateBtn');
@@ -233,11 +263,12 @@
                 address: document.getElementById('editAddress').value
             }) 
         }).then(() => {
-            alert("তথ্য সফলভাবে আপডেট হয়েছে!");
+            alert("সফলভাবে আপডেট করা হয়েছে!");
             location.reload();
         });
     };
 
+    // মেম্বার ডিলিট
     function deleteMember(id) {
         if(confirm("আপনি কি নিশ্চিতভাবে আইডি: " + id + " ডিলিট করতে চান?")) {
             fetch(scriptURL, { 
@@ -251,6 +282,7 @@
         }
     }
 
+    // সার্চ ফিল্টার (টেবিলের জন্য)
     document.getElementById('searchInput').onkeyup = function() {
         const val = this.value.toLowerCase();
         const filtered = allMembers.filter(m => m.name.toLowerCase().includes(val) || m.memberId.toString().includes(val));
