@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সদস্য তালিকা - বন্ধু কল্যাণ সংস্থা</title>
+    <title>সদস্য ব্যবস্থাপনা - বন্ধু কল্যাণ সংস্থা</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -11,70 +11,90 @@
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
         .navbar { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        /* প্রোফাইল কার্ড স্টাইল (সার্চ করলে যা দেখাবে) */
+        #singleProfileView {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-left: 6px solid #1e3c72;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .info-label { font-size: 14px; color: #888; font-weight: 600; margin-bottom: 2px; }
+        .info-value { font-size: 18px; font-weight: 700; color: #333; }
+
+        /* টেবিল স্টাইল */
         .table-card { border-radius: 15px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
         .table thead { background: #1e3c72; color: white; }
-        .table th { padding: 15px; font-weight: 600; border: none; }
-        .table td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
-        .search-box { border-radius: 50px; padding: 10px 20px; border: 1px solid #ddd; transition: 0.3s; }
-        .search-box:focus { border-color: #1e3c72; box-shadow: 0 0 10px rgba(30, 60, 114, 0.1); }
-        .btn-action { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .loader-wrapper { display: flex; flex-direction: column; align-items: center; padding: 50px; }
+        .search-box { border-radius: 50px; padding: 10px 20px; border: 1px solid #ddd; }
+        .btn-action { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-warning" href="dashboard.html">
-            <i class="fas fa-users-cog me-2"></i>অ্যাডমিন প্যানেল
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto text-center">
-                <li class="nav-item"><a class="nav-link" href="dashboard.html">ড্যাশবোর্ড</a></li>
-                <li class="nav-item"><a class="nav-link active" href="list.html">সদস্য তালিকা</a></li>
-                <li class="nav-item"><a class="nav-link" href="payment.html">টাকা জমা</a></li>
-            </ul>
-        </div>
+    <div class="container text-center">
+        <a class="navbar-brand fw-bold" href="dashboard.html">বন্ধু কল্যাণ সংস্থা</a>
     </div>
 </nav>
 
 <div class="container mt-4 pb-5">
-    <div class="row mb-4 align-items-center">
-        <div class="col-md-6 mb-3 mb-md-0 text-center text-md-start">
-            <h4 class="fw-bold mb-0 text-primary">সদস্য ব্যবস্থাপনা</h4>
-        </div>
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-6"><h4 class="fw-bold text-primary">সদস্য তথ্য অনুসন্ধান</h4></div>
         <div class="col-md-6 text-md-end">
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0 rounded-start-pill"><i class="fas fa-search text-muted"></i></span>
-                <input type="text" id="searchInput" class="form-control border-start-0 rounded-end-pill py-2 search-box" placeholder="নাম, আইডি বা মোবাইল দিয়ে খুঁজুন...">
+            <input type="text" id="searchInput" class="form-control search-box" placeholder="নাম বা আইডি দিয়ে খুঁজুন...">
+        </div>
+    </div>
+
+    <div id="singleProfileView" class="container">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <i class="fas fa-user-circle fa-5x text-primary mb-3 mb-md-0"></i>
+            </div>
+            <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 id="viewName" class="fw-bold mb-0">সদস্যের নাম</h3>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="resetView()">সব তালিকা দেখুন</button>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        <p class="info-label">সদস্য আইডি</p>
+                        <p class="info-value" id="viewId">--</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="info-label">মোবাইল নম্বর</p>
+                        <p class="info-value" id="viewPhone">--</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="info-label">মোট জমা</p>
+                        <p class="info-value text-success" id="viewDeposit">৳ 0</p>
+                    </div>
+                    <div class="col-6 col-md-3 text-end">
+                        <button class="btn btn-primary btn-sm px-4 rounded-pill" id="editFromView">এডিট করুন</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="table-card p-2">
+    <div class="table-card p-2" id="fullTableContainer">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th class="text-nowrap">সদস্যের নাম</th>
+                        <th>নাম</th>
                         <th class="text-center">আইডি</th>
-                        <th class="text-center">মোবাইল নম্বর</th>
+                        <th class="text-center">মোবাইল</th>
                         <th class="text-end">মোট জমা</th>
                         <th class="text-center">অ্যাকশন</th>
                     </tr>
                 </thead>
                 <tbody id="memberTableBody">
-                    <tr>
-                        <td colspan="5">
-                            <div class="loader-wrapper">
-                                <div class="spinner-border text-primary" role="status"></div>
-                                <p class="mt-2 mb-0 text-muted">ডাটা লোড হচ্ছে, অপেক্ষা করুন...</p>
-                            </div>
-                        </td>
-                    </tr>
+                    <tr><td colspan="5" class="text-center py-5 text-muted">ডাটা লোড হচ্ছে...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -83,34 +103,33 @@
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header bg-primary text-white border-0" style="border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title fw-bold"><i class="fas fa-user-edit me-2"></i>তথ্য সংশোধন</h5>
+        <div class="modal-content border-0" style="border-radius: 20px;">
+            <div class="modal-header bg-primary text-white" style="border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title">সদস্যের তথ্য সংশোধন</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <form id="editForm">
+                    <input type="hidden" id="editRowIndex">
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-muted">সদস্যের নাম</label>
-                        <input type="text" id="editName" class="form-control py-2" required>
+                        <label class="form-label fw-bold">সদস্যের নাম</label>
+                        <input type="text" id="editName" class="form-control" required>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-bold small text-muted">সদস্য আইডি</label>
-                            <input type="text" id="editId" class="form-control bg-light py-2" readonly title="আইডি পরিবর্তন করা যাবে না">
+                            <label class="form-label fw-bold">আইডি</label>
+                            <input type="text" id="editId" class="form-control bg-light" readonly>
                         </div>
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-bold small text-muted">পাসওয়ার্ড</label>
-                            <input type="text" id="editPass" class="form-control py-2" required>
+                            <label class="form-label fw-bold">পাসওয়ার্ড</label>
+                            <input type="text" id="editPass" class="form-control" required>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small text-muted">মোবাইল নম্বর (০ ছাড়া শুরু হলে সমস্যা নেই)</label>
-                        <input type="text" id="editPhone" class="form-control py-2" placeholder="017XXXXXXXX" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">মোবাইল নম্বর</label>
+                        <input type="text" id="editPhone" class="form-control" required>
                     </div>
-                    <button type="submit" id="updateBtn" class="btn btn-primary w-100 py-2 fw-bold rounded-pill">
-                        <i class="fas fa-save me-2"></i>আপডেট নিশ্চিত করুন
-                    </button>
+                    <button type="submit" id="updateBtn" class="btn btn-primary w-100 py-2 fw-bold rounded-pill">আপডেট সেভ করুন</button>
                 </form>
             </div>
         </div>
@@ -121,42 +140,61 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzGNMAyXw-jL45vgN997FTTvk3ddPuZaH_QO3unK-yWggu2BP7V3hb7UY2SWJlkh0jXEg/exec'; 
     let allMembers = [];
 
-    // ডাটা লোড করা
     async function loadMembers() {
         try {
             const res = await fetch(scriptURL);
             allMembers = await res.json();
             renderTable(allMembers);
-        } catch (e) {
-            document.getElementById('memberTableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">ডাটা লোড করতে ব্যর্থ হয়েছে!</td></tr>';
-        }
+            checkURLSearch(); // ইউআরএল-এ সার্চ আছে কি না দেখা
+        } catch (e) { console.log("Load failed"); }
     }
 
     function renderTable(data) {
         const tbody = document.getElementById('memberTableBody');
         tbody.innerHTML = '';
-        if(data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">কোনো সদস্য পাওয়া যায়নি।</td></tr>';
-            return;
-        }
         data.forEach((m, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="fw-bold">${m.name}</td>
-                <td class="text-center"><span class="badge bg-light text-dark border px-3 py-2">${m.memberId}</span></td>
-                <td class="text-center text-muted small">${m.phone}</td>
-                <td class="text-end fw-bold text-success">৳ ${parseFloat(m.deposit).toLocaleString('bn-BD')}</td>
-                <td class="text-center">
-                    <button class="btn btn-outline-primary btn-action me-1 shadow-sm" onclick="openEditModal(${index})" title="এডিট">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-outline-danger btn-action shadow-sm" onclick="deleteMember('${m.memberId}')" title="ডিলিট">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
+            tbody.innerHTML += `
+                <tr>
+                    <td class="fw-bold">${m.name}</td>
+                    <td class="text-center">${m.memberId}</td>
+                    <td class="text-center">${m.phone}</td>
+                    <td class="text-end fw-bold text-success">৳ ${m.deposit}</td>
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary btn-action" onclick="openEditModal(${index})"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
             `;
-            tbody.appendChild(tr);
         });
+    }
+
+    // ইউআরএল চেক করা (ড্যাশবোর্ড থেকে সার্চ করলে এটি কাজ করবে)
+    function checkURLSearch() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        if (searchQuery) {
+            showSingleMember(searchQuery);
+        }
+    }
+
+    // নির্দিষ্ট সদস্যের প্রোফাইল কার্ড দেখানো
+    function showSingleMember(idOrName) {
+        const member = allMembers.find(m => m.memberId.toString() === idOrName || m.name === idOrName);
+        if (member) {
+            document.getElementById('fullTableContainer').style.display = 'none';
+            document.getElementById('singleProfileView').style.display = 'block';
+
+            document.getElementById('viewName').innerText = member.name;
+            document.getElementById('viewId').innerText = member.memberId;
+            document.getElementById('viewPhone').innerText = member.phone;
+            document.getElementById('viewDeposit').innerText = '৳ ' + member.deposit;
+
+            const index = allMembers.indexOf(member);
+            document.getElementById('editFromView').onclick = () => openEditModal(index);
+        }
+    }
+
+    function resetView() {
+        window.location.href = "list.html";
     }
 
     // এডিট মোডাল ওপেন
@@ -165,79 +203,40 @@
         document.getElementById('editName').value = m.name;
         document.getElementById('editId').value = m.memberId;
         document.getElementById('editPass').value = m.password;
-        
-        // মোবাইল নাম্বার থেকে ' চিহ্ন থাকলে তা সরিয়ে বক্সে দেখানো (পরিষ্কার দেখানোর জন্য)
-        let phoneVal = m.phone.toString();
-        if (phoneVal.startsWith("'")) {
-            phoneVal = phoneVal.substring(1);
-        }
-        document.getElementById('editPhone').value = phoneVal;
-        
+        document.getElementById('editPhone').value = m.phone;
         const myModal = new bootstrap.Modal(document.getElementById('editModal'));
         myModal.show();
     }
 
-    // এডিট ফর্ম সাবমিট (মোবাইল নাম্বারে ' চিহ্ন অটো এড করা)
+    // এডিট ফর্ম সাবমিট (মোবাইল নাম্বারে ' এড করার লজিকসহ)
     document.getElementById('editForm').onsubmit = function(e) {
         e.preventDefault();
         const btn = document.getElementById('updateBtn');
-        const phoneInput = document.getElementById('editPhone').value.trim();
-
-        // মোবাইল নাম্বারের শুরুতে ' চিহ্ন যোগ করা (গুগল শিটে ০ বজায় রাখার জন্য)
-        let formattedPhone = phoneInput;
-        if (!formattedPhone.startsWith("'")) {
-            formattedPhone = "'" + formattedPhone;
-        }
+        let phoneInput = document.getElementById('editPhone').value.trim();
+        if (!phoneInput.startsWith("'")) phoneInput = "'" + phoneInput;
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>আপডেট হচ্ছে...';
+        btn.innerText = "আপডেট হচ্ছে...";
 
         const updatedData = {
             action: "editMember",
             memberId: document.getElementById('editId').value,
             name: document.getElementById('editName').value,
             password: document.getElementById('editPass').value,
-            phone: formattedPhone
+            phone: phoneInput
         };
 
-        fetch(scriptURL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: JSON.stringify(updatedData) 
-        })
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(updatedData) })
         .then(() => {
-            alert("সদস্যের তথ্য সফলভাবে আপডেট করা হয়েছে!");
+            alert("আপডেট সফল হয়েছে!");
             location.reload();
-        })
-        .catch(err => {
-            alert("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save me-2"></i>আপডেট নিশ্চিত করুন';
         });
     };
 
-    // ডিলিট ফাংশন
-    function deleteMember(id) {
-        if(confirm("আপনি কি নিশ্চিতভাবে এই সদস্যকে (ID: " + id + ") ডিলিট করতে চান?")) {
-            fetch(scriptURL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: JSON.stringify({ action: "deleteMember", memberId: id }) 
-            }).then(() => {
-                alert("সদস্য ডিলিট করা হয়েছে।");
-                location.reload();
-            });
-        }
-    }
-
-    // সার্চ ফিল্টার লজিক
+    // সাধারণ সার্চ ফিল্টার (টেবিল এর জন্য)
     document.getElementById('searchInput').onkeyup = function() {
         const val = this.value.toLowerCase();
-        const filtered = allMembers.filter(m => 
-            m.name.toLowerCase().includes(val) || 
-            m.memberId.toString().includes(val) ||
-            m.phone.toString().includes(val)
-        );
+        const filtered = allMembers.filter(m => m.name.toLowerCase().includes(val) || m.memberId.toString().includes(val));
         renderTable(filtered);
     };
 
