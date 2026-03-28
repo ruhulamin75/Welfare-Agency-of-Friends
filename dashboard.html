@@ -42,10 +42,13 @@
             font-size: 2.5rem;
             margin-bottom: 15px;
         }
-        .text-primary-custom { color: #1e3c72; }
-        .text-success-custom { color: #27ae60; }
-        .text-info-custom { color: #3498db; }
-        .text-warning-custom { color: #f39c12; }
+        /* লগআউট বাটন স্টাইল */
+        .btn-logout {
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -59,16 +62,21 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto text-center">
+            <ul class="navbar-nav ms-auto text-center align-items-center">
                 <li class="nav-item"><a class="nav-link active" href="dashboard.html">ড্যাশবোর্ড</a></li>
                 <li class="nav-item"><a class="nav-link" href="list.html">সদস্য তালিকা</a></li>
                 <li class="nav-item"><a class="nav-link" href="payment.html">টাকা জমা</a></li>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <button onclick="logout()" class="btn btn-outline-danger btn-logout btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i> লগআউট
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="header-section text-center">
+<div class="header-section text-center shadow-sm">
     <div class="container">
         <h2 class="fw-bold mb-1">অ্যাডমিন প্যানেল</h2>
         <p class="opacity-75 mb-0">স্বাগতম! আপনার সংস্থার কার্যক্রম পরিচালনা করুন</p>
@@ -80,30 +88,30 @@
     
     <div class="row g-4">
         <div class="col-6 col-md-3">
-            <a href="payment.html" class="action-card">
-                <i class="fas fa-cash-register action-icon text-primary-custom"></i>
+            <a href="payment.html" class="action-card text-center">
+                <i class="fas fa-cash-register action-icon text-primary"></i>
                 <span class="fw-bold">টাকা জমা নিন</span>
             </a>
         </div>
         
         <div class="col-6 col-md-3">
-            <a href="list.html" class="action-card">
-                <i class="fas fa-users-viewfinder action-icon text-info-custom"></i>
+            <a href="list.html" class="action-card text-center">
+                <i class="fas fa-users-viewfinder action-icon text-info"></i>
                 <span class="fw-bold">সদস্য তালিকা</span>
             </a>
         </div>
 
         <div class="col-6 col-md-3">
-            <a href="add-member.html" class="action-card">
-                <i class="fas fa-user-plus action-icon text-success-custom"></i>
+            <a href="add-member.html" class="action-card text-center">
+                <i class="fas fa-user-plus action-icon text-success"></i>
                 <span class="fw-bold">নতুন সদস্য</span>
             </a>
         </div>
 
         <div class="col-6 col-md-3">
-            <a href="#" onclick="alert('ফিচারটি শীঘ্রই আসছে!')" class="action-card">
-                <i class="fas fa-chart-pie action-icon text-warning-custom"></i>
-                <span class="fw-bold">রিপোর্ট দেখুন</span>
+            <a href="#" onclick="logout()" class="action-card text-center border-danger">
+                <i class="fas fa-power-off action-icon text-danger"></i>
+                <span class="fw-bold text-danger">লগআউট করুন</span>
             </a>
         </div>
     </div>
@@ -112,6 +120,19 @@
         <p class="text-muted small">© ২০২৬ বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত</p>
     </div>
 </div>
+
+<script>
+    function logout() {
+        if(confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
+            // সেশন ডাটা ক্লিয়ার করা (যদি থাকে)
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // index.html পেজে পাঠিয়ে দেওয়া
+            window.location.href = "index.html";
+        }
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
