@@ -178,14 +178,17 @@
         if (e.target !== searchInput) suggestionBox.style.display = 'none';
     });
 
-    function logoutAdmin() {
+      function logout() {
     if(confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
-        localStorage.removeItem('isAdminLoggedIn'); // সংকেত মুছে ফেলা
-        localStorage.clear(); 
-        window.location.href = "index.html"; // লগইন পেজে ফেরত
+        // সব লোকাল ডাটা মুছে ফেলা
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('loggedInMember');
+        localStorage.removeItem('memberData');
+        
+        // লগইন পেজে পাঠিয়ে দেওয়া
+        window.location.href = "index.html";
     }
 }
-
     window.onload = fetchMembers;
 </script>
 
