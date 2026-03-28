@@ -9,31 +9,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
         .navbar { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .stat-card {
-            border: none;
-            border-radius: 15px;
-            transition: transform 0.3s ease;
+        .header-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
+            padding: 40px 0;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 30px;
         }
-        .stat-card:hover { transform: translateY(-5px); }
-        .bg-members { background: linear-gradient(45deg, #1e3c72, #2a5298); }
-        .bg-money { background: linear-gradient(45deg, #11998e, #38ef7d); }
-        .bg-action { background: linear-gradient(45deg, #f2994a, #f2c94c); }
-        .action-btn {
-            border-radius: 12px;
-            padding: 20px;
+        .action-card {
+            border-radius: 20px;
+            padding: 25px;
             text-decoration: none;
             color: #333;
             background: white;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid #eee;
+            transition: all 0.3s ease;
+            border: 1px solid #edf2f7;
+            height: 100%;
         }
-        .action-btn:hover { background: #f8f9fa; transform: scale(1.02); color: #000; }
-        .loading-spinner { display: none; }
+        .action-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            color: #1e3c72;
+        }
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .text-primary-custom { color: #1e3c72; }
+        .text-success-custom { color: #27ae60; }
+        .text-info-custom { color: #3498db; }
+        .text-warning-custom { color: #f39c12; }
     </style>
 </head>
 <body>
@@ -41,8 +53,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
         <a class="navbar-brand fw-bold" href="#">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo" width="30" class="me-2">
-            বন্ধু কল্যাণ সংস্থা
+            <i class="fas fa-hand-holding-heart me-2 text-warning"></i>বন্ধু কল্যাণ সংস্থা
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -50,107 +61,57 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto text-center">
                 <li class="nav-item"><a class="nav-link active" href="dashboard.html">ড্যাশবোর্ড</a></li>
-                <li class="nav-item"><a class="nav-link" href="index.html">সদস্য তালিকা</a></li>
+                <li class="nav-item"><a class="nav-link" href="list.html">সদস্য তালিকা</a></li>
                 <li class="nav-item"><a class="nav-link" href="payment.html">টাকা জমা</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4 pb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0">অ্যাডমিন ড্যাশবোর্ড</h4>
-        <button onclick="fetchData()" class="btn btn-sm btn-outline-primary rounded-pill">
-            <i class="fas fa-sync-alt me-1"></i> রিফ্রেশ
-        </button>
-    </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-6">
-            <div class="card stat-card bg-members p-4 shadow">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="mb-1 opacity-75">মোট সদস্য সংখ্যা</p>
-                        <h2 id="total-members" class="fw-bold mb-0">...</h2>
-                    </div>
-                    <i class="fas fa-users fa-3x opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="card stat-card bg-money p-4 shadow">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <p class="mb-1 opacity-75">সর্বমোট জমার পরিমাণ</p>
-                        <h2 id="total-amount" class="fw-bold mb-0">৳ ...</h2>
-                    </div>
-                    <i class="fas fa-wallet fa-3x opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <h5 class="fw-bold mb-3">দ্রুত কাজ করুন</h5>
-    <div class="row g-3">
-        <div class="col-6 col-md-3">
-            <a href="payment.html" class="action-btn text-center">
-                <i class="fas fa-plus-circle fa-2x text-primary mb-2"></i>
-                <p class="mb-0 fw-bold small">টাকা জমা</p>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="add-member.html" class="action-btn text-center">
-                <i class="fas fa-user-plus fa-2x text-success mb-2"></i>
-                <p class="mb-0 fw-bold small">নতুন সদস্য</p>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="index.html" class="action-btn text-center">
-                <i class="fas fa-list fa-2x text-info mb-2"></i>
-                <p class="mb-0 fw-bold small">তালিকা দেখুন</p>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="#" onclick="alert('ফিচারটি শীঘ্রই আসছে!')" class="action-btn text-center">
-                <i class="fas fa-file-invoice-dollar fa-2x text-warning mb-2"></i>
-                <p class="mb-0 fw-bold small">মাসিক রিপোর্ট</p>
-            </a>
-        </div>
+<div class="header-section text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-1">অ্যাডমিন প্যানেল</h2>
+        <p class="opacity-75 mb-0">স্বাগতম! আপনার সংস্থার কার্যক্রম পরিচালনা করুন</p>
     </div>
 </div>
 
-<script>
-    // আপনার গুগল অ্যাপস স্ক্রিপ্ট লিঙ্কটি এখানে বসান
-    const scriptURL = 'আপনার_এপ_স্ক্রিপ্ট_লিঙ্ক_এখানে'; 
+<div class="container pb-5">
+    <h5 class="fw-bold mb-4 text-secondary text-center">প্রধান মেনু (Main Menu)</h5>
+    
+    <div class="row g-4">
+        <div class="col-6 col-md-3">
+            <a href="payment.html" class="action-card">
+                <i class="fas fa-cash-register action-icon text-primary-custom"></i>
+                <span class="fw-bold">টাকা জমা নিন</span>
+            </a>
+        </div>
+        
+        <div class="col-6 col-md-3">
+            <a href="list.html" class="action-card">
+                <i class="fas fa-users-viewfinder action-icon text-info-custom"></i>
+                <span class="fw-bold">সদস্য তালিকা</span>
+            </a>
+        </div>
 
-    async function fetchData() {
-        // রিফ্রেশ করার সময় টেক্সট পরিবর্তন
-        document.getElementById('total-members').innerText = '...';
-        document.getElementById('total-amount').innerText = '৳ ...';
+        <div class="col-6 col-md-3">
+            <a href="add-member.html" class="action-card">
+                <i class="fas fa-user-plus action-icon text-success-custom"></i>
+                <span class="fw-bold">নতুন সদস্য</span>
+            </a>
+        </div>
 
-        try {
-            const response = await fetch(scriptURL);
-            const data = await response.json();
-            
-            // মোট সদস্য সংখ্যা
-            document.getElementById('total-members').innerText = data.length;
+        <div class="col-6 col-md-3">
+            <a href="#" onclick="alert('ফিচারটি শীঘ্রই আসছে!')" class="action-card">
+                <i class="fas fa-chart-pie action-icon text-warning-custom"></i>
+                <span class="fw-bold">রিপোর্ট দেখুন</span>
+            </a>
+        </div>
+    </div>
 
-            // সর্বমোট টাকা হিসাব করা
-            let totalMoney = data.reduce((sum, member) => {
-                let deposit = parseFloat(member.deposit) || 0;
-                return sum + deposit;
-            }, 0);
-
-            document.getElementById('total-amount').innerText = '৳ ' + totalMoney.toLocaleString('bn-BD');
-        } catch (error) {
-            console.error('Data Fetching Error:', error);
-            alert('ডাটা লোড করতে সমস্যা হয়েছে। দয়া করে ইন্টারনেট কানেকশন চেক করুন।');
-        }
-    }
-
-    // পেজ লোড হওয়ার সাথে সাথে ডাটা নিয়ে আসা
-    window.onload = fetchData;
-</script>
+    <div class="mt-5 pt-4 border-top text-center">
+        <p class="text-muted small">© ২০২৬ বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত</p>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
