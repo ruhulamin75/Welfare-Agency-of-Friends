@@ -178,18 +178,20 @@
         if (e.target !== searchInput) suggestionBox.style.display = 'none';
     });
 
-    function logout() {
-    if(confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
-        // সব লোকাল ডাটা মুছে ফেলা
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('loggedInMember');
-        localStorage.removeItem('memberData');
-        
-        // লগইন পেজে পাঠিয়ে দেওয়া
-        window.location.href = "index.html";
-    }
-}
+    // আপনার ড্যাশবোর্ড পেজের স্ক্রিপ্টে এই ফাংশনটি যোগ করুন
+function logoutAdmin() {
+  if (confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
+    // ১. ফায়ারবেস থেকে সাইন আউট (ঐচ্ছিক কিন্তু ভালো)
+    // auth.signOut(); 
 
+    // ২. ব্রাউজারের সেশন ডাটা মুছে ফেলা
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.clear();
+
+    // ৩. লগইন পেজে পাঠিয়ে দেওয়া
+    window.location.replace("index.html"); // লগইন পেজের নাম দিন
+  }
+}
     window.onload = fetchMembers;
 </script>
 
