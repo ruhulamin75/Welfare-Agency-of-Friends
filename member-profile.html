@@ -105,6 +105,25 @@
 </div>
 
 <script>
+    window.onload = function() {
+    // ব্রাউজারের মেমোরি থেকে ডাটা চেক করা
+    const member = JSON.parse(localStorage.getItem('loggedInMember'));
+
+    // যদি মেমোরিতে কোনো মেম্বারের তথ্য না পাওয়া যায় (অর্থাৎ সে লগইন করেনি)
+    if (!member) {
+        alert("দয়া করে আগে লগইন করুন!"); // ইউজারকে মেসেজ দেওয়া
+        window.location.href = "member-login.html"; // তাকে লগইন পেজে পাঠিয়ে দেওয়া
+        return; // নিচের বাকি কোড আর কাজ করবে না
+    }
+
+    // যদি মেম্বার লগইন করা থাকে, তবেই নিচের ডাটাগুলো পেজে দেখাবে
+    document.getElementById('u-name').innerText = member.name;
+    document.getElementById('u-id').innerText = "আইডি: " + member.memberId;
+    document.getElementById('u-deposit').innerText = member.deposit;
+    document.getElementById('u-last-date').innerText = member.lastDeposit;
+    // ... বাকি সব আইডি বসান
+};
+
     // পেজ লোড হলে ডাটা বসানো
     window.onload = function() {
         const member = JSON.parse(localStorage.getItem('loggedInMember'));
