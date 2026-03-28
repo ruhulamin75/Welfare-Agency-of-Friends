@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>নতুন সদস্য যুক্ত করুন - বন্ধু কল্যাণ সংস্থা</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary-blue: #0A369D;
+            --primary-green: #7CD03A;
+            --bg-light: #F4F7F6;
+            --text-dark: #333;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* হেডার স্টাইল (অন্যান্য পেজের মতো) */
+        header {
+            background-color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--primary-green); /* এই পেজের থিম সবুজ */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { height: 40px; margin-right: 15px; }
+        .header-left span { font-size: 22px; font-weight: 700; color: var(--primary-blue); }
+
+        /* টপ ন্যাভিগেশন মেনু */
+        .top-nav {
+            margin-top: 72px;
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-nav a:hover, .top-nav a.active {
+            background: var(--primary-green);
+            color: #fff;
+        }
+
+        /* মেইন কন্টেন্ট সেকশন */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            max-width: 550px;
+            width: 100%;
+        }
+
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-header i { font-size: 40px; color: var(--primary-green); margin-bottom: 10px; }
+        .form-header h2 { font-size: 26px; color: var(--primary-blue); font-weight: 700; }
+        .form-header p { font-size: 15px; color: #666; margin-top: 5px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-dark); font-size: 15px; }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 18px; }
+        .input-wrapper input, .input-wrapper textarea { width: 100%; padding: 15px 15px 15px 45px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; transition: 0.3s; }
+        .input-wrapper textarea { padding: 15px 15px 15px 45px; resize: vertical; height: 100px; }
+        .input-wrapper input:focus, .input-wrapper textarea:focus { border-color: var(--primary-green); box-shadow: 0 0 8px rgba(124, 208, 58, 0.2); }
+
+        .btn-submit {
+            display: block; width: 100%; padding: 16px; font-size: 18px; font-weight: 600; color: #fff; background: linear-gradient(135deg, var(--primary-green), #68b32e); border: none; border-radius: 10px; cursor: pointer; transition: 0.3s, transform 0.1s; font-family: 'Hind Siliguri', sans-serif; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-submit:active { transform: translateY(1px); }
+
+        @media (max-width: 600px) {
+            .header-left span { display: none; }
+            .top-nav { justify-content: flex-start; }
+            .form-container { padding: 30px 20px; }
+            .form-header h2 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="logo.png" alt="বন্ধু কল্যাণ সংস্থা">
+            <span>বন্ধু কল্যাণ ড্যাশবোর্ড</span>
+        </div>
+        <div>
+            <span style="color: #666; font-weight: 600;"><i class="fas fa-user-shield"></i> অ্যাডমিন</span>
+        </div>
+    </header>
+
+    <div class="top-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i> ড্যাশবোর্ড</a>
+        <a href="add-member.html" class="active"><i class="fas fa-user-plus"></i> নতুন সদস্য</a>
+        <a href="list.html"><i class="fas fa-list"></i> সদস্য তালিকা</a>
+        <a href="payment.html"><i class="fas fa-money-bill-wave"></i> পেমেন্ট</a>
+    </div>
+
+    <main>
+        <div class="form-container">
+            <div class="form-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>নতুন সদস্য যুক্ত করুন</h2>
+                <p>দয়া করে নিচের সব তথ্য সঠিকভাবে পূরণ করুন</p>
+            </div>
+            
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label for="memberId">সদস্য আইডি (ID)*</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" id="memberId" name="memberId" placeholder="উদাহরণ: 1001" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberName">পূর্ণ নাম*</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="memberName" name="memberName" placeholder="উদাহরণ: আব্দুর রহমান" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberPhone">মোবাইল নম্বর*</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone-alt"></i>
+                        <input type="tel" id="memberPhone" name="memberPhone" placeholder="উদাহরণ: 01700000000" pattern="[0-9]{11}" required title="অনুগ্রহ করে ১১ ডিজিটের মোবাইল নম্বর লিখুন">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberPass">লগইন পাসওয়ার্ড*</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="text" id="memberPass" name="memberPass" placeholder="সদস্যের জন্য একটি পাসওয়ার্ড দিন" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberAddress">বর্তমান ঠিকানা</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <textarea id="memberAddress" name="memberAddress" placeholder="রাস্তা, এলাকা, শহর বা গ্রাম লিখুন..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-check-circle"></i>
+                    সদস্য যুক্ত করুন
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // এখানে আপনার গুগল শিটের Web App URL বসান
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec'; 
+
+        const form = document.getElementById('addMemberForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> সেভ হচ্ছে...';
+            submitBtn.disabled = true;
+
+            const params = new URLSearchParams();
+            params.append('action', 'addMember'); 
+            params.append('id', document.getElementById('memberId').value);
+            params.append('name', document.getElementById('memberName').value);
+            params.append('phone', document.getElementById('memberPhone').value); 
+            params.append('password', document.getElementById('memberPass').value);
+            params.append('address', document.getElementById('memberAddress').value);
+            params.append('totalDeposit', '0'); 
+            params.append('lastDeposit', '0');  
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    alert('তথ্য সফলভাবে শিটে সেভ হয়েছে!');
+                    form.reset(); 
+                } else {
+                    alert('সমস্যা হয়েছে: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert('সেভ করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন বা URL চেক করুন।');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> সদস্য যুক্ত করুন';
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>

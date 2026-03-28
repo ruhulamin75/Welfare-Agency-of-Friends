@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html'; // লগইন করা না থাকলে বের করে দেবে
+        }
+    </script>
+    <title>পেমেন্ট গ্রহণ - বন্ধু কল্যাণ সংস্থা</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0A369D;
+            --primary-green: #7CD03A;
+            --bg-light: #F4F7F6;
+            --text-dark: #333;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        header { background-color: #fff; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #ff9800; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .header-left { display: flex; align-items: center; }
+        .header-left img { height: 40px; margin-right: 15px; }
+        .header-left span { font-size: 22px; font-weight: 700; color: var(--primary-blue); }
+
+        .top-nav { margin-top: 72px; background: #fff; padding: 15px 20px; display: flex; justify-content: center; gap: 15px; box-shadow: var(--shadow); flex-wrap: wrap; }
+        .top-nav a { text-decoration: none; color: var(--primary-blue); font-weight: 600; padding: 8px 15px; border-radius: 8px; background: var(--bg-light); transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .top-nav a:hover, .top-nav a.active { background: var(--primary-blue); color: #fff; }
+
+        main { padding: 30px; max-width: 600px; margin: auto; }
+
+        .payment-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: var(--shadow); border-top: 5px solid #ff9800; }
+        .payment-card h2 { color: var(--primary-blue); margin-bottom: 20px; font-size: 22px; text-align: center; }
+
+        .search-box-container { position: relative; margin-bottom: 20px; }
+        .search-box-container input { width: 100%; padding: 15px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; }
+        .search-box-container input:focus { border-color: #ff9800; }
+        
+        .autocomplete-list { position: absolute; border: 1px solid #ddd; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #fff; max-height: 200px; overflow-y: auto; border-radius: 0 0 10px 10px; box-shadow: var(--shadow); display: none; }
+        .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 15px; }
+        .autocomplete-item:hover { background-color: var(--bg-light); }
+        .autocomplete-item strong { color: var(--primary-blue); }
+
+        .member-details { background: #fdfdfd; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .member-details p { margin-bottom: 8px; font-size: 16px; color: #555; }
+        .member-details strong { color: var(--text-dark); width: 120px; display: inline-block; }
+        .current-deposit { color: var(--primary-green) !important; font-size: 18px; font-weight: bold; }
+
+        .amount-input-group { display: none; margin-bottom: 20px; }
+        .amount-input-group label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--text-dark); }
+        .amount-wrapper { display: flex; align-items: center; }
+        .amount-wrapper span { background: #eee; padding: 15px 20px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 18px; border: 1px solid #ddd; border-right: none; }
+        .amount-wrapper input { flex: 1; padding: 15px; font-size: 20px; font-weight: bold; border: 1px solid #ddd; border-radius: 0 10px 10px 0; outline: none; color: var(--primary-green); }
+        .amount-wrapper input:focus { border-color: var(--primary-green); }
+
+        .btn-pay { width: 100%; padding: 15px; background: #ff9800; color: white; font-size: 18px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; display: none; }
+        .btn-pay:hover { background: #e68a00; transform: translateY(-2px); }
+
+        #loader { text-align: center; color: var(--primary-blue); padding: 10px; display: none; }
+
+        /* রিসিট ডিজাইন (জলছাপ সহ) */
+        .receipt-container { 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: var(--shadow); 
+            margin-top: 20px; 
+            display: none; 
+            border: 2px dashed #ddd; 
+            position: relative; 
+            overflow: hidden; /* জলছাপ যেন বাইরে না যায় */
+        }
+
+        /* ব্যাকগ্রাউন্ড জলছাপ (Watermark) */
+        .receipt-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%; 
+            height: 70%;
+            background-image: url('logo.png'); /* আপনার লগো ফাইল */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08; /* মাত্র ৮% দৃশ্যমান থাকবে (ঝাপসা) */
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* রিসিটের লেখার উপরে যেন জলছাপ না আসে */
+        .receipt-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .receipt-header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .receipt-header img { height: 50px; margin-bottom: 10px; }
+        .receipt-header h3 { color: var(--text-dark); font-size: 24px; margin: 0; }
+        .receipt-header p { color: #666; font-size: 14px; margin-top: 5px; font-weight: 600; }
+        
+        .receipt-details p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; border-bottom: 1px dotted #eee; padding-bottom: 5px; }
+        .receipt-total { font-size: 20px !important; font-weight: bold; color: var(--primary-green); border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; }
+
+        .btn-print { width: 100%; padding: 12px; background: var(--primary-blue); color: white; font-size: 16px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+
+        /* প্রিন্ট করার সময়ের ডিজাইন */
+        @media print {
+            body * { visibility: hidden; }
+            .receipt-container, .receipt-container * { visibility: visible; }
+            .receipt-container { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; margin: 0; padding: 0; }
+            .btn-print { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .header-left span { display: none; }
+            .top-nav { justify-content: flex-start; }
+            main { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="logo.png" alt="বন্ধু কল্যাণ সংস্থা Logo">
+            <span>বন্ধু কল্যাণ সংস্থা</span>
+        </div>
+        <div><span style="color: #666; font-weight: 600;"><i class="fas fa-user-shield"></i> অ্যাডমিন</span></div>
+    </header>
+
+    <div class="top-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i> ড্যাশবোর্ড</a>
+        <a href="add-member.html"><i class="fas fa-user-plus"></i> নতুন সদস্য</a>
+        <a href="list.html"><i class="fas fa-list"></i> সদস্য তালিকা</a>
+        <a href="payment.html" class="active"><i class="fas fa-money-bill-wave"></i> পেমেন্ট</a>
+    </div>
+
+    <main>
+        <div class="payment-card" id="paymentFormCard">
+            <h2><i class="fas fa-hand-holding-usd"></i> পেমেন্ট গ্রহণ করুন</h2>
+            
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> ডাটা লোড হচ্ছে...</div>
+
+            <div class="search-box-container">
+                <input type="text" id="searchInput" placeholder="সদস্যের আইডি বা নাম লিখে খুঁজুন..." autocomplete="off">
+                <div id="autocomplete-list" class="autocomplete-list"></div>
+            </div>
+
+            <div class="member-details" id="memberDetails">
+                <input type="hidden" id="selectedRowIndex">
+                <input type="hidden" id="selectedId">
+                <p><strong>নাম:</strong> <span id="lblName"></span></p>
+                <p><strong>মোবাইল:</strong> <span id="lblPhone"></span></p>
+                <p><strong>বর্তমান জমা:</strong> <span id="lblTotal" class="current-deposit"></span></p>
+            </div>
+
+            <div class="amount-input-group" id="amountGroup">
+                <label>জমার পরিমাণ লিখুন:</label>
+                <div class="amount-wrapper">
+                    <span>৳</span>
+                    <input type="number" id="payAmount" placeholder="500" min="1">
+                </div>
+            </div>
+
+            <button class="btn-pay" id="btnPay" onclick="processPayment()"><i class="fas fa-check-circle"></i> পেমেন্ট জমা করুন</button>
+        </div>
+
+        <div class="receipt-container" id="receiptCard">
+            <div class="receipt-header">
+                <img src="logo.png" alt="বন্ধু কল্যাণ সংস্থা">
+                <h3>মানি রিসিট</h3>
+                <p>বন্ধু কল্যাণ সংস্থা - ডিজিটাল পেমেন্ট সিস্টেম</p>
+            </div>
+            <div class="receipt-details">
+                <p><span>তারিখ:</span> <strong id="recDate"></strong></p>
+                <p><span>ট্রানজেকশন আইডি:</span> <strong id="recTrx"></strong></p>
+                <p><span>সদস্য আইডি:</span> <strong id="recId"></strong></p>
+                <p><span>সদস্যের নাম:</span> <strong id="recName"></strong></p>
+                <p><span>মোবাইল নম্বর:</span> <strong id="recPhone"></strong></p>
+                <p class="receipt-total"><span>জমার পরিমাণ:</span> <span id="recAmount"></span></p>
+            </div>
+            <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> রিসিট প্রিন্ট করুন</button>
+            <button class="btn-print" style="background:#666; margin-top:10px;" onclick="window.location.reload()"><i class="fas fa-redo"></i> নতুন পেমেন্ট</button>
+        </div>
+    </main>
+
+    <script>
+        // এখানে আপনার আপডেট করা Web App URL বসান
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
+        
+        let allMembers = [];
+        let searchInput = document.getElementById('searchInput');
+        let autocompleteList = document.getElementById('autocomplete-list');
+
+        window.onload = function() {
+            document.getElementById('loader').style.display = 'block';
+            fetch(SCRIPT_URL + '?action=getMembers')
+                .then(res => res.json())
+                .then(data => {
+                    allMembers = data;
+                    document.getElementById('loader').style.display = 'none';
+                })
+                .catch(err => {
+                    document.getElementById('loader').innerHTML = 'ডাটা লোড করতে সমস্যা হয়েছে!';
+                });
+        }
+
+        searchInput.addEventListener('input', function() {
+            let val = this.value;
+            autocompleteList.innerHTML = '';
+            
+            if (!val) {
+                autocompleteList.style.display = 'none';
+                hideForm();
+                return;
+            }
+
+            let matches = allMembers.filter(member => 
+                member.id.toString().includes(val) || member.name.toLowerCase().includes(val.toLowerCase())
+            );
+
+            if (matches.length > 0) {
+                autocompleteList.style.display = 'block';
+                matches.forEach(m => {
+                    let div = document.createElement('div');
+                    div.className = 'autocomplete-item';
+                    div.innerHTML = `<strong>${m.id}</strong> <span>${m.name}</span>`;
+                    
+                    div.addEventListener('click', function() {
+                        searchInput.value = m.name;
+                        autocompleteList.style.display = 'none';
+                        showMemberDetails(m);
+                    });
+                    autocompleteList.appendChild(div);
+                });
+            } else {
+                autocompleteList.style.display = 'none';
+            }
+        });
+
+        function showMemberDetails(m) {
+            document.getElementById('memberDetails').style.display = 'block';
+            document.getElementById('amountGroup').style.display = 'block';
+            document.getElementById('btnPay').style.display = 'block';
+            
+            document.getElementById('selectedRowIndex').value = m.rowIndex;
+            document.getElementById('selectedId').value = m.id;
+            document.getElementById('lblName').innerText = m.name;
+            document.getElementById('lblPhone').innerText = m.phone;
+            document.getElementById('lblTotal').innerText = "৳ " + (m.totalDeposit || 0);
+        }
+
+        function hideForm() {
+            document.getElementById('memberDetails').style.display = 'none';
+            document.getElementById('amountGroup').style.display = 'none';
+            document.getElementById('btnPay').style.display = 'none';
+        }
+
+        function processPayment() {
+            let amount = document.getElementById('payAmount').value;
+            if(!amount || amount <= 0) {
+                alert("অনুগ্রহ করে সঠিক টাকার পরিমাণ দিন!");
+                return;
+            }
+
+            let btnPay = document.getElementById('btnPay');
+            btnPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেস হচ্ছে...';
+            btnPay.disabled = true;
+
+            let rowIndex = document.getElementById('selectedRowIndex').value;
+            const today = new Date();
+            const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+            const paymentDate = today.toLocaleDateString('bn-BD', dateOptions);
+
+            let params = new URLSearchParams();
+            params.append('action', 'addPayment');
+            params.append('rowIndex', rowIndex);
+            params.append('amount', amount);
+            params.append('date', paymentDate);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    showReceipt(amount, paymentDate);
+                }
+            })
+            .catch(err => {
+                alert('পেমেন্ট গ্রহণ করতে সমস্যা হয়েছে!');
+                btnPay.innerHTML = '<i class="fas fa-check-circle"></i> পেমেন্ট জমা করুন';
+                btnPay.disabled = false;
+            });
+        }
+
+        function showReceipt(amount, date) {
+            document.getElementById('paymentFormCard').style.display = 'none';
+            document.getElementById('receiptCard').style.display = 'block';
+
+            document.getElementById('recDate').innerText = date;
+            document.getElementById('recTrx').innerText = "WAF-" + Math.floor(Math.random() * 90000 + 10000); // WAF (Bondhu Kollan Songstha)
+            document.getElementById('recId').innerText = document.getElementById('selectedId').value;
+            document.getElementById('recName').innerText = document.getElementById('lblName').innerText;
+            document.getElementById('recPhone').innerText = document.getElementById('lblPhone').innerText;
+            document.getElementById('recAmount').innerText = "৳ " + parseInt(amount).toLocaleString('bn-BD');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.id !== 'searchInput') autocompleteList.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

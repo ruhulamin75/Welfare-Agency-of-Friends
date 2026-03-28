@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html'; // লগইন করা না থাকলে বের করে দেবে
+        }
+    </script>
+    <title>সদস্য তালিকা - বন্ধু কল্যাণ সংস্থা</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0A369D;
+            --primary-green: #7CD03A;
+            --bg-light: #F4F7F6;
+            --text-dark: #333;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* হেডার স্টাইল */
+        header {
+            background-color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--primary-blue);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-left img { height: 40px; margin-right: 15px; }
+        .header-left span { font-size: 22px; font-weight: 700; color: var(--primary-blue); }
+
+        /* টপ ন্যাভিগেশন মেনু */
+        .top-nav {
+            margin-top: 72px;
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-nav a:hover, .top-nav a.active {
+            background: var(--primary-blue);
+            color: #fff;
+        }
+
+        /* মেইন কন্টেন্ট ও টেবিল */
+        main {
+            padding: 30px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .table-container {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h2 { color: var(--primary-blue); font-size: 22px; }
+        
+        /* সামারি কার্ড (সদস্য ও টাকা) */
+        .summary-box {
+            text-align: right;
+            background: var(--bg-light);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .summary-box .count {
+            color: #666;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .summary-box .amount {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--bg-light);
+            color: var(--primary-blue);
+            font-weight: 600;
+            border-radius: 5px;
+        }
+
+        tr:hover { background-color: #f9fbfd; }
+
+        .deposit-amt {
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        .btn-delete {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover { background: #e60000; }
+
+        #loader { text-align: center; color: var(--primary-blue); font-size: 18px; padding: 20px; }
+
+        @media (max-width: 600px) {
+            main { padding: 15px; }
+            .header-left span { display: none; }
+            .top-nav { justify-content: flex-start; }
+            .summary-box { text-align: left; width: 100%; }
+            th, td { padding: 10px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="logo.png" alt="WAF Logo">
+            <span>বন্ধু কল্যাণ সংস্থা</span>
+        </div>
+        <div>
+            <span style="color: #666; font-weight: 600;"><i class="fas fa-user-shield"></i> অ্যাডমিন</span>
+        </div>
+    </header>
+
+    <div class="top-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i> ড্যাশবোর্ড</a>
+        <a href="add-member.html"><i class="fas fa-user-plus"></i> নতুন সদস্য</a>
+        <a href="list.html" class="active"><i class="fas fa-list"></i> সদস্য তালিকা</a>
+        <a href="payment.html"><i class="fas fa-money-bill-wave"></i> পেমেন্ট</a>
+    </div>
+
+    <main>
+        <div class="table-container">
+            <div class="table-header">
+                <h2><i class="fas fa-users"></i> নিবন্ধিত সদস্য তালিকা</h2>
+                <div class="summary-box">
+                    <div class="count" id="totalCount">মোট সদস্য: লোড হচ্ছে...</div>
+                    <div class="amount" id="totalAmount">মোট জমা: ৳ ০</div>
+                </div>
+            </div>
+            
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> ডাটা লোড হচ্ছে...</div>
+
+            <table id="membersTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>নাম</th>
+                        <th>মোবাইল নম্বর</th>
+                        <th>সর্বমোট জমা</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // আপনার Web App URL এখানে বসান
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
+
+        window.onload = function() {
+            fetch(SCRIPT_URL + '?action=getMembers')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('membersTable').style.display = 'table';
+                    
+                    const tbody = document.getElementById('tableBody');
+                    tbody.innerHTML = '';
+
+                    let totalSum = 0; // মোট টাকা হিসাব করার ভেরিয়েবল
+
+                    if(data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">কোনো সদস্য পাওয়া যায়নি।</td></tr>';
+                        document.getElementById('totalCount').innerText = `মোট সদস্য: ০ জন`;
+                        document.getElementById('totalAmount').innerText = `মোট জমা: ৳ ০`;
+                        return;
+                    }
+
+                    data.forEach(member => {
+                        // টাকার পরিমাণ যোগ করা (যদি ফাঁকা থাকে তবে ০ ধরা হবে)
+                        let depositAmt = parseInt(member.totalDeposit) || 0;
+                        totalSum += depositAmt;
+
+                        let tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><strong>${member.id}</strong></td>
+                            <td>${member.name}</td>
+                            <td>${member.phone}</td>
+                            <td class="deposit-amt">৳ ${depositAmt.toLocaleString('bn-BD')}</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteMember(${member.rowIndex}, '${member.name}')">
+                                    <i class="fas fa-trash-alt"></i> ডিলিট
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // মোট সদস্য এবং মোট টাকার পরিমাণ বসানো
+                    document.getElementById('totalCount').innerText = `মোট সদস্য: ${data.length} জন`;
+                    // toLocaleString('bn-BD') ব্যবহার করা হয়েছে যাতে কমা (,) সুন্দরভাবে বসে
+                    document.getElementById('totalAmount').innerText = `মোট জমা: ৳ ${totalSum.toLocaleString('bn-BD')}`;
+                })
+                .catch(err => {
+                    document.getElementById('loader').innerHTML = '<span style="color:red;">ডাটা লোড করতে সমস্যা হয়েছে!</span>';
+                });
+        }
+
+        function deleteMember(rowIndex, name) {
+            if(confirm(`আপনি কি নিশ্চিত যে আপনি '${name}' কে ডিলিট করতে চান? ডিলিট করলে ডাটা ফিরে পাওয়া যাবে না!`)) {
+                
+                document.getElementById('loader').style.display = 'block';
+                document.getElementById('loader').innerHTML = '<i class="fas fa-spinner fa-spin"></i> ডিলিট হচ্ছে...';
+                document.getElementById('membersTable').style.display = 'none';
+
+                let params = new URLSearchParams();
+                params.append('action', 'deleteMember');
+                params.append('rowIndex', rowIndex);
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: params
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.result === 'success') {
+                        alert('সদস্য সফলভাবে ডিলিট হয়েছে!');
+                        window.location.reload(); 
+                    }
+                })
+                .catch(err => {
+                    alert('ডিলিট করতে সমস্যা হয়েছে!');
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
