@@ -2,40 +2,48 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>টাকা জমা ও রিসিট - বন্ধু কল্যাণ সংস্থা</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টাকা জমা ও রশিদ - বন্ধু কল্যাণ সংস্থা</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background: #f0f2f5; }
         .payment-card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        /* প্রিন্ট রিসিট ডিজাইন (শুধুমাত্র প্রিন্টে দেখা যাবে) */
-        #receipt-section { display: none; }
+        /* রিসিট ডিজাইন */
+        #receipt-section { display: none; padding: 20px; }
+        .receipt-box {
+            border: 2px solid #1e3c72;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            position: relative;
+        }
+        .receipt-header { border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .org-logo { width: 70px; height: 70px; object-fit: contain; margin-bottom: 10px; }
+        .receipt-title { 
+            background: #1e3c72; color: white; display: inline-block; 
+            padding: 3px 15px; border-radius: 50px; font-size: 14px; 
+        }
+        .amount-box { 
+            background: #f1f9f5; border: 1px solid #27ae60; 
+            padding: 10px; border-radius: 10px; text-align: center; margin: 15px 0; 
+        }
+        .qr-code { width: 60px; opacity: 0.8; }
         
+        /* প্রিন্ট সেটিংস */
         @media print {
             body * { visibility: hidden; }
             #receipt-section, #receipt-section * { visibility: visible; }
-            #receipt-section { 
-                display: block !important; 
-                position: absolute; 
-                left: 0; top: 0; width: 100%; 
-                padding: 20px; border: 1px solid #000;
-            }
+            #receipt-section { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
             .no-print { display: none !important; }
         }
 
-        .receipt-box {
-            border: 2px solid #2c3e50;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: 20px auto;
-            background: #fff;
-        }
-        .receipt-header { border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        
-        /* সাজেশন ডিজাইন */
+        /* সাজেশন বক্স */
         #suggestion-box {
             position: absolute; z-index: 1000; width: 100%;
             background: white; border: 1px solid #ddd; display: none;
@@ -48,53 +56,67 @@
 <body>
 
 <nav class="navbar navbar-dark bg-dark mb-4 no-print">
-    <div class="container"><a class="navbar-brand" href="dashboard.html">বন্ধু কল্যাণ সংস্থা</a></div>
+    <div class="container"><a class="navbar-brand fw-bold" href="dashboard.html">বন্ধু কল্যাণ সংস্থা</a></div>
 </nav>
 
 <div class="container no-print">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card payment-card p-4">
-                <h3 class="text-center mb-4"><i class="fas fa-money-check-alt text-success me-2"></i>টাকা জমা নিন</h3>
+                <h3 class="text-center mb-4 fw-bold text-primary"><i class="fas fa-hand-holding-usd me-2"></i>টাকা জমা নিন</h3>
                 <form id="payment-form">
                     <div class="mb-3 position-relative">
                         <label class="form-label fw-bold">সদস্য আইডি</label>
-                        <input type="text" id="mId" class="form-control" placeholder="BK-101" autocomplete="off" required>
+                        <input type="text" id="mId" class="form-control" placeholder="ID লিখুন..." autocomplete="off" required>
                         <div id="suggestion-box"></div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">টাকার পরিমাণ</label>
                         <input type="number" id="mAmount" class="form-control" placeholder="৳ 0.00" required>
                     </div>
-                    <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold">জমা করুন ও রিসিট দেখুন</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary w-100 py-2 fw-bold shadow">জমা করুন ও রিসিট দেখুন</button>
                 </form>
-                <div id="status" class="mt-3 text-center"></div>
             </div>
         </div>
     </div>
 </div>
 
 <div id="receipt-section">
-    <div class="receipt-box">
+    <div class="receipt-box shadow">
         <div class="receipt-header text-center">
-            <h2 class="fw-bold mb-0">বন্ধু কল্যাণ সংস্থা</h2>
-            <p class="mb-0 text-muted">টাকা জমার রশিদ</p>
+            <img src="https://lh3.googleusercontent.com/d/1-zvnNiBAR3arEWlegDh_WP1NELCm--X2" alt="Logo" class="org-logo">
+            <h3 class="fw-bold mb-0 text-primary">বন্ধু কল্যাণ সংস্থা</h3>
+            <p class="mb-1 small text-muted">সদস্যদের কল্যাণে আমাদের পথচলা</p>
+            <div class="receipt-title fw-bold">টাকা জমার রশিদ (Money Receipt)</div>
         </div>
+
         <div class="receipt-body">
-            <p><strong>তারিখ:</strong> <span id="r-date"></span></p>
-            <p><strong>রিসিট নং:</strong> <span id="r-no"></span></p>
-            <hr>
-            <p><strong>সদস্যের নাম:</strong> <span id="r-name"></span></p>
-            <p><strong>সদস্য আইডি:</strong> <span id="r-id"></span></p>
-            <p><strong>জমার পরিমাণ:</strong> <span class="fw-bold fs-4">৳ <span id="r-amount"></span></span></p>
+            <div class="d-flex justify-content-between mb-3">
+                <span class="small"><strong>তারিখ:</strong> <span id="r-date"></span></span>
+                <span class="small"><strong>রিসিট নং:</strong> #<span id="r-no"></span></span>
+            </div>
+            <p class="mb-2"><strong>সদস্যের নাম:</strong> <span id="r-name">---</span></p>
+            <p class="mb-2"><strong>সদস্য আইডি:</strong> <span id="r-id" class="badge bg-secondary">---</span></p>
+            
+            <div class="amount-box">
+                <p class="mb-0 text-muted small text-uppercase">জমার পরিমাণ</p>
+                <h2 class="fw-bold mb-0 text-success">৳ <span id="r-amount">0.00</span></h2>
+            </div>
         </div>
-        <div class="receipt-footer mt-5 pt-3 d-flex justify-content-between">
-            <div class="text-center" style="width: 120px; border-top: 1px solid #000;">সদস্যের স্বাক্ষর</div>
-            <div class="text-center" style="width: 120px; border-top: 1px solid #000;">কর্তৃপক্ষের স্বাক্ষর</div>
+
+        <div class="d-flex justify-content-between align-items-end mt-4">
+            <div class="text-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=Paid" class="qr-code">
+                <p class="small text-muted mb-0">Verified</p>
+            </div>
+            <div class="text-center" style="width: 130px; border-top: 1px solid #333;">
+                <p class="small fw-bold mb-0">কর্তৃপক্ষের স্বাক্ষর</p>
+            </div>
         </div>
+
         <div class="text-center mt-4 no-print">
-            <button onclick="window.print()" class="btn btn-primary btn-sm"><i class="fas fa-print me-2"></i>প্রিন্ট করুন</button>
-            <button onclick="location.reload()" class="btn btn-secondary btn-sm">নতুন জমা</button>
+            <button onclick="window.print()" class="btn btn-success px-4 me-2"><i class="fas fa-print me-2"></i>প্রিন্ট করুন</button>
+            <button onclick="location.reload()" class="btn btn-outline-secondary">নতুন জমা</button>
         </div>
     </div>
 </div>
@@ -103,7 +125,6 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzGNMAyXw-jL45vgN997FTTvk3ddPuZaH_QO3unK-yWggu2BP7V3hb7UY2SWJlkh0jXEg/exec'; 
     let members = [];
 
-    // মেম্বার লিস্ট লোড করা সাজেশনের জন্য
     window.onload = function() {
         fetch(scriptURL).then(res => res.json()).then(data => members = data);
     }
@@ -144,14 +165,12 @@
             mode: 'no-cors',
             body: JSON.stringify({ action: "updateDeposit", memberId: id, amount: amt })
         }).then(() => {
-            // রিসিটে ডাটা বসানো
             document.getElementById('r-date').innerText = new Date().toLocaleDateString('bn-BD');
             document.getElementById('r-no').innerText = Math.floor(1000 + Math.random() * 9000);
             document.getElementById('r-name').innerText = member.name;
             document.getElementById('r-id').innerText = id;
             document.getElementById('r-amount').innerText = amt;
 
-            // ফর্ম লুকানো এবং রিসিট দেখানো
             document.querySelector('.no-print.container').style.display = 'none';
             document.getElementById('receipt-section').style.display = 'block';
         });
