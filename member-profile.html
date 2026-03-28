@@ -122,9 +122,12 @@
     };
 
     function logout() {
-        localStorage.removeItem('loggedInMember');
-        window.location.href = "member-login.html";
-    }
+    // ১. ব্রাউজারের মেমোরি থেকে মেম্বারের তথ্য মুছে ফেলা
+    localStorage.removeItem('loggedInMember');
+    
+    // ২. সরাসরি index.html পেজে পাঠিয়ে দেওয়া
+    window.location.href = "index.html";
+}
 </script>
 
 </body>
