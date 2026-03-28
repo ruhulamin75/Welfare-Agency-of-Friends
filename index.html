@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -25,22 +24,23 @@
             font-family: 'Hind Siliguri', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-dark);
-            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* সুন্দর একটি গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
         .hero-section {
-            min-height: 100vh;
+            flex: 1; /* পেজকে পুরোটা জুড়াতে সাহায্য করবে */
             display: flex;
             align-items: center;
             background: linear-gradient(135deg, rgba(10,54,157,0.05) 0%, rgba(124,208,58,0.1) 100%);
-            padding: 20px;
+            padding: 60px 20px;
             position: relative;
+            overflow: hidden;
         }
 
-        /* ব্যাকগ্রাউন্ডে আলপনা বা শেপ (Design Element) */
-        .shape-1 { position: absolute; top: -50px; left: -50px; width: 300px; height: 300px; background: var(--primary-green); border-radius: 50%; opacity: 0.1; filter: blur(50px); }
-        .shape-2 { position: absolute; bottom: -50px; right: -50px; width: 400px; height: 400px; background: var(--primary-blue); border-radius: 50%; opacity: 0.1; filter: blur(60px); }
+        .shape-1 { position: absolute; top: -50px; left: -50px; width: 300px; height: 300px; background: var(--primary-green); border-radius: 50%; opacity: 0.1; filter: blur(50px); z-index: 0; }
+        .shape-2 { position: absolute; bottom: -50px; right: -50px; width: 400px; height: 400px; background: var(--primary-blue); border-radius: 50%; opacity: 0.1; filter: blur(60px); z-index: 0; }
 
         .container {
             max-width: 1200px;
@@ -50,26 +50,26 @@
             gap: 50px;
             align-items: center;
             z-index: 10;
+            width: 100%;
         }
 
-        /* বাম পাশের টেক্সট এরিয়া */
         .hero-content {
             padding-right: 30px;
-            animation: slideUp 1s ease-out;
+            animation: slideUp 0.8s ease-out;
         }
 
         .brand-logo {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .brand-logo img { height: 60px; }
         .brand-logo h1 { font-size: 28px; color: var(--primary-blue); font-weight: 700; line-height: 1.2; }
 
         .hero-content h2 {
-            font-size: 42px;
+            font-size: 40px;
             color: var(--text-dark);
             font-weight: 700;
             line-height: 1.3;
@@ -85,64 +85,55 @@
             margin-bottom: 30px;
         }
 
-        /* ফিচার লিস্ট */
-        .feature-list { list-style: none; margin-bottom: 40px; }
+        .feature-list { list-style: none; margin-bottom: 30px; }
         .feature-list li {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
-            font-size: 18px;
+            font-size: 17px;
             color: #444;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-weight: 600;
         }
-        .feature-list i {
-            color: #fff;
+        
+        .feature-icon {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
             background: var(--primary-green);
-            width: 30px;
-            height: 30px;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            font-size: 14px;
+            font-size: 12px;
+            margin-top: 3px;
         }
 
-        /* ডান পাশের লগইন কার্ড */
         .login-card-wrapper {
-            animation: slideLeft 1s ease-out;
+            animation: slideLeft 0.8s ease-out;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 50px 40px;
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid #fff;
             text-align: center;
         }
 
-        .login-card h3 {
-            font-size: 24px;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-        }
+        .login-card h3 { font-size: 24px; color: var(--primary-blue); margin-bottom: 10px; }
+        .login-card p { color: #666; margin-bottom: 30px; font-size: 15px; }
 
-        .login-card p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 15px;
-        }
-
-        /* প্রিমিয়াম বাটন */
         .btn-portal {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            padding: 18px 25px;
-            font-size: 18px;
+            padding: 16px 20px;
+            font-size: 17px;
             font-weight: 600;
             color: #fff;
             border: none;
@@ -151,48 +142,36 @@
             text-decoration: none;
             transition: 0.3s;
             margin-bottom: 15px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
-        .btn-portal:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
-        .btn-portal i.icon-main { font-size: 24px; }
-        .btn-portal i.icon-arrow { font-size: 16px; opacity: 0.7; transition: 0.3s; }
-        .btn-portal:hover i.icon-arrow { transform: translateX(5px); opacity: 1; }
-
+        .btn-portal:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .btn-admin { background: linear-gradient(135deg, var(--primary-blue), #082d85); }
         .btn-member { background: linear-gradient(135deg, var(--primary-green), #68b32e); }
 
-        /* ফুটার */
+        /* ফুটার ঠিক করা হয়েছে */
         footer {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            width: 100%;
+            background-color: #fff;
+            padding: 20px;
             text-align: center;
-            color: #888;
+            color: #777;
             font-size: 14px;
+            border-top: 1px solid #eee;
+            width: 100%;
         }
 
-        /* অ্যানিমেশন কিফ্রেম */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideLeft { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 
-        @keyframes slideLeft {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* মোবাইল রেসপনসিভ */
+        /* মোবাইল রেসপনসিভ আপডেট */
         @media (max-width: 992px) {
-            .container { grid-template-columns: 1fr; text-align: center; gap: 30px; }
-            .hero-content { padding-right: 0; }
+            .hero-section { padding: 40px 15px; }
+            .container { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero-content { padding-right: 0; order: 1; }
+            .login-card-wrapper { order: 2; }
             .brand-logo { justify-content: center; }
-            .feature-list li { justify-content: center; }
-            .hero-content h2 { font-size: 32px; }
-            .login-card { padding: 40px 20px; }
-            footer { position: relative; margin-top: 40px; }
+            .hero-content h2 { font-size: 30px; }
+            .feature-list { display: inline-block; text-align: left; }
+            .login-card { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -205,47 +184,41 @@
         <div class="container">
             <div class="hero-content">
                 <div class="brand-logo">
-                    <img src="logo.png" alt="বন্ধু কল্যাণ সংস্থা">
-                    <h1>বন্ধু কল্যাণ<br>সংস্থা</h1>
+                    <img src="logo.png" alt="Logo">
+                    <h1>বন্ধু কল্যাণ সংস্থা</h1>
                 </div>
-                <h2>আমাদের সংস্থার সকল হিসাব এখন <span>হাতের মুঠোয়!</span></h2>
-                <p>আমরা নিয়ে এসেছি সম্পূর্ণ ডিজিটাল ও নিরাপদ ম্যানেজমেন্ট সিস্টেম। টাকা প্রদান, রিসিট সংগ্রহ এবং হিসাব সংরক্ষণ এখন আরও সহজ ও স্বচ্ছ।</p>
+                <h2>আপনার সমিতির হিসাব এখন <span>ডিজিটাল!</span></h2>
+                <p>নিরাপদ ও স্বচ্ছ হিসাব ব্যবস্থাপনায় আমরা আছি আপনার পাশে।</p>
                 
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> ১০০% নিরাপদ ও সুরক্ষিত ডাটাবেস</li>
-                    <li><i class="fas fa-check"></i> অটোমেটিক ডিজিটাল মানি রিসিট</li>
-                    <li><i class="fas fa-check"></i> সদস্যদের জন্য নিজস্ব অনলাইন প্রোফাইল</li>
+                    <li><div class="feature-icon"><i class="fas fa-check"></i></div> ১০০% নিরাপদ ডাটাবেস</li>
+                    <li><div class="feature-icon"><i class="fas fa-check"></i></div> ডিজিটাল মানি রিসিট</li>
+                    <li><div class="feature-icon"><i class="fas fa-check"></i></div> অনলাইন প্রোফাইল</li>
                 </ul>
             </div>
 
             <div class="login-card-wrapper">
                 <div class="login-card">
-                    <h3>পোর্টালে প্রবেশ করুন</h3>
-                    <p>আপনার অ্যাকাউন্ট ধরন নির্বাচন করে লগইন করুন</p>
+                    <h3>পোর্টালে প্রবেশ</h3>
+                    <p>লগইন করতে নিচের বাটন চাপুন</p>
 
                     <a href="login.html" class="btn-portal btn-admin">
-                        <div style="display:flex; align-items:center; gap:15px;">
-                            <i class="fas fa-user-shield icon-main"></i>
-                            <span>অ্যাডমিন প্যানেল</span>
-                        </div>
-                        <i class="fas fa-arrow-right icon-arrow"></i>
+                        <span><i class="fas fa-user-shield"></i> অ্যাডমিন প্যানেল</span>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
 
                     <a href="member-login.html" class="btn-portal btn-member">
-                        <div style="display:flex; align-items:center; gap:15px;">
-                            <i class="fas fa-users icon-main"></i>
-                            <span>সদস্য লগইন</span>
-                        </div>
-                        <i class="fas fa-arrow-right icon-arrow"></i>
+                        <span><i class="fas fa-users"></i> সদস্য লগইন</span>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
         </div>
-
-        <footer>
-            &copy; 2026 বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত
-        </footer>
     </div>
+
+    <footer>
+        &copy; 2026 বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত
+    </footer>
 
 </body>
 </html>
