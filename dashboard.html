@@ -5,70 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ড্যাশবোর্ড - বন্ধু কল্যাণ সংস্থা</title>
     <script>
-        if (localStorage.getItem('adminLoggedIn') !== 'true') window.location.replace("index.html");
-        window.history.forward();
-        function noBack() { window.history.forward(); }
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.replace("index.html");
+        }
     </script>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
-        .header-section { background: linear-gradient(180deg, #084382 0%, #1b9cfc 100%); color: white; padding: 50px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .search-input { border-radius: 12px; padding: 15px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-top: -30px; }
-        .menu-card { background: white; border-radius: 18px; padding: 25px; text-align: center; text-decoration: none; display: block; transition: 0.3s; border: 1px solid #eee; }
-        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .menu-icon { font-size: 2.5rem; margin-bottom: 10px; color: #084382; }
-        #suggestion-box { background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; position: absolute; width: 100%; z-index: 1000; margin-top: 5px; }
-        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; text-align: left; }
+        :root { --primary: #084382; --accent: #74dc2c; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; }
+        .header-section { background: linear-gradient(135deg, var(--primary) 0%, #1b9cfc 100%); color: white; padding: 60px 0 100px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; text-align: center; }
+        .search-container { margin-top: -50px; position: relative; z-index: 100; }
+        .search-input { border-radius: 20px; padding: 18px 25px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.15); font-size: 1.2rem; }
+        #suggestion-box { position: absolute; width: 100%; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; z-index: 999; margin-top: 8px; max-height: 250px; overflow-y: auto; }
+        .suggestion-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #f1f1f1; transition: 0.2s; font-weight: 600; }
+        .suggestion-item:hover { background-color: #f8f9fa; color: var(--primary); }
+        .menu-card { background: white; border-radius: 25px; padding: 35px; text-align: center; text-decoration: none; display: block; transition: 0.3s; border: 1px solid #eee; }
+        .menu-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .menu-icon { font-size: 3.5rem; margin-bottom: 15px; }
+        .full-info-card { background: white; border-radius: 25px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.12); overflow: hidden; margin-top: 40px; border-top: 6px solid var(--accent); }
     </style>
 </head>
-<body onload="noBack();">
+<body>
+
 <div class="header-section shadow-sm">
-    <h2 class="fw-bold">অ্যাডমিন প্যানেল</h2>
-    <p class="opacity-75">বন্ধু কল্যাণ সংস্থা</p>
+    <h1 class="fw-bold">অ্যাডমিন ড্যাশবোর্ড</h1>
+    <p class="opacity-75 fs-5">বন্ধু কল্যাণ সংস্থা পরিচালনা প্যানেল</p>
 </div>
-<div class="container">
+
+<div class="container search-container">
     <div class="row justify-content-center">
-        <div class="col-md-8 position-relative">
-            <input type="text" id="memberSearch" class="form-control search-input" placeholder="সদস্যের নাম বা আইডি দিয়ে সার্চ করুন...">
+        <div class="col-lg-8 col-md-10 position-relative">
+            <input type="text" id="memberSearch" class="form-control search-input" placeholder="সদস্যের নাম বা আইডি দিয়ে খুঁজুন..." autocomplete="off">
             <div id="suggestion-box"></div>
+            <div id="result-display"></div>
         </div>
     </div>
 </div>
-<div class="container mt-5 pb-5">
-    <div class="row g-3">
-        <div class="col-6 col-md-3"><a href="list.html" class="menu-card"><i class="fas fa-users menu-icon"></i><br><span class="fw-bold text-dark">সদস্য তালিকা</span></a></div>
-        <div class="col-6 col-md-3"><a href="payment.html" class="menu-card"><i class="fas fa-hand-holding-usd menu-icon text-success"></i><br><span class="fw-bold text-dark">টাকা জমা নিন</span></a></div>
-        <div class="col-6 col-md-3"><a href="add-member.html" class="menu-card"><i class="fas fa-user-plus menu-icon text-warning"></i><br><span class="fw-bold text-dark">নতুন সদস্য</span></a></div>
-        <div class="col-6 col-md-3"><a href="#" onclick="logout()" class="menu-card"><i class="fas fa-power-off menu-icon text-danger"></i><br><span class="fw-bold text-danger">লগআউট</span></a></div>
+
+<div class="container py-5 mt-4">
+    <div class="row g-4 text-center">
+        <div class="col-6 col-md-3"><a href="list.html" class="menu-card"><i class="fas fa-users-cog menu-icon text-primary"></i><h5 class="fw-bold text-dark">সদস্য তালিকা</h5></a></div>
+        <div class="col-6 col-md-3"><a href="payment.html" class="menu-card"><i class="fas fa-money-check-alt menu-icon text-success"></i><h5 class="fw-bold text-dark">জমা নিন</h5></a></div>
+        <div class="col-6 col-md-3"><a href="add-member.html" class="menu-card"><i class="fas fa-user-plus menu-icon text-warning"></i><h5 class="fw-bold text-dark">নতুন সদস্য</h5></a></div>
+        <div class="col-6 col-md-3"><a href="#" onclick="logout()" class="menu-card"><i class="fas fa-sign-out-alt menu-icon text-danger"></i><h5 class="fw-bold text-danger">লগআউট</h5></a></div>
     </div>
 </div>
+
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz2lZ6KwOU2ek7Kyk7E1ugj1hAnNpeoG3ti0eBAl5QoIHWGYY1r21_8UVoQ8yCfpXa1-Q/exec';
     let members = [];
+
     async function fetchMembers() {
-        try { const r = await fetch(scriptURL); members = await r.json(); } catch(e) { console.log("Error"); }
+        try {
+            const response = await fetch(scriptURL);
+            members = await response.json();
+        } catch (e) { console.error("ডাটা লোড করতে সমস্যা হচ্ছে"); }
     }
-    document.getElementById('memberSearch').addEventListener('input', function() {
-        const val = this.value.toLowerCase();
-        const box = document.getElementById('suggestion-box');
-        box.innerHTML = '';
-        if(!val) { box.style.display='none'; return; }
+
+    const searchInput = document.getElementById('memberSearch');
+    const suggestionBox = document.getElementById('suggestion-box');
+    const resultDisplay = document.getElementById('result-display');
+
+    searchInput.addEventListener('input', function() {
+        const val = this.value.trim().toLowerCase();
+        suggestionBox.innerHTML = '';
+        if (!val) { suggestionBox.style.display = 'none'; return; }
+
         const filtered = members.filter(m => m.name.toLowerCase().includes(val) || m.memberId.toString().includes(val));
-        if(filtered.length > 0) {
+
+        if (filtered.length > 0) {
             filtered.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
-                div.innerHTML = `<strong>${m.memberId}</strong> - ${m.name}`;
-                div.onclick = () => window.location.href = `list.html?search=${m.memberId}`;
-                box.appendChild(div);
+                div.innerHTML = `<i class="fas fa-search me-2 opacity-50"></i> <strong>${m.memberId}</strong> - ${m.name}`;
+                div.onclick = () => {
+                    showFullCard(m);
+                    suggestionBox.style.display = 'none';
+                    searchInput.value = m.name;
+                };
+                suggestionBox.appendChild(div);
             });
-            box.style.display = 'block';
+            suggestionBox.style.display = 'block';
         }
     });
-    function logout() { if(confirm("লগআউট করবেন?")) { localStorage.clear(); window.location.replace("index.html"); } }
+
+    function showFullCard(m) {
+        resultDisplay.innerHTML = `
+            <div class="full-info-card card animate__animated animate__fadeInUp">
+                <div class="card-body p-4 p-md-5">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto"><div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; font-size: 30px;"><i class="fas fa-user"></i></div></div>
+                        <div class="col"><h3 class="fw-bold mb-0 text-dark">${m.name}</h3><span class="badge bg-primary px-3">সদস্য আইডি: ${m.memberId}</span></div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6"><p class="text-muted mb-1"><i class="fas fa-phone me-2"></i>মোবাইল</p><h5 class="fw-bold">${m.phone}</h5></div>
+                        <div class="col-md-6"><p class="text-muted mb-1"><i class="fas fa-lock me-2"></i>পাসওয়ার্ড</p><h5 class="fw-bold text-primary">${m.password || 'N/A'}</h5></div>
+                        <div class="col-md-6"><p class="text-muted mb-1"><i class="fas fa-wallet me-2"></i>মোট জমা</p><h5 class="fw-bold text-success">৳ ${m.deposit}</h5></div>
+                        <div class="col-md-6"><p class="text-muted mb-1"><i class="fas fa-calendar-alt me-2"></i>শেষ জমা</p><h5 class="fw-bold">${m['Last Date'] || 'নেই'}</h5></div>
+                        <div class="col-12"><p class="text-muted mb-1"><i class="fas fa-map-marker-alt me-2"></i>ঠিকানা</p><h5 class="fw-bold">${m.address || 'তথ্য নেই'}</h5></div>
+                    </div>
+                    <div class="mt-5 d-flex gap-3">
+                        <button onclick="window.location.href='edit.html?id=${m.memberId}'" class="btn btn-primary btn-lg flex-grow-1 rounded-pill fw-bold shadow"><i class="fas fa-edit me-2"></i>তথ্য পরিবর্তন (এডিট)</button>
+                        <button onclick="deleteMember('${m.memberId}')" class="btn btn-outline-danger btn-lg rounded-pill fw-bold"><i class="fas fa-trash-alt me-2"></i>ডিলিট</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function logout() {
+        if(confirm("আপনি কি নিশ্চিতভাবে লগআউট করতে চান?")) {
+            localStorage.clear();
+            window.location.replace("index.html");
+        }
+    }
     window.onload = fetchMembers;
 </script>
 </body>
