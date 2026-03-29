@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2196f3">
-<link rel="apple-touch-icon" href="/icon-192.png">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বন্ধু কল্যাণ সংস্থা - ডিজিটাল ম্যানেজমেন্ট সিস্টেম</title>
@@ -178,6 +174,11 @@
             .login-card { padding: 30px 20px; }
         }
     </style>
+
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196f3">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
 </head>
 <body>
 
@@ -223,11 +224,15 @@
     <footer>
         &copy; 2026 বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত
     </footer>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker ঠিকঠাক কানেক্ট হয়েছে!'))
+                    .catch(err => console.error('Service Worker কানেক্ট হতে সমস্যা হয়েছে:', err));
+            });
+        }
+    </script>
 
 </body>
 </html>
