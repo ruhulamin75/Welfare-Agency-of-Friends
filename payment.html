@@ -9,7 +9,7 @@
         }
     </script>
     <title>পেমেন্ট গ্রহণ - বন্ধু কল্যাণ সংস্থা</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@
         .search-box-container { position: relative; margin-bottom: 20px; }
         .search-box-container input { width: 100%; padding: 15px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; }
         .search-box-container input:focus { border-color: #ff9800; }
-        
+
         .autocomplete-list { position: absolute; border: 1px solid #ddd; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #fff; max-height: 200px; overflow-y: auto; border-radius: 0 0 10px 10px; box-shadow: var(--shadow); display: none; }
         .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 15px; }
         .autocomplete-item:hover { background-color: var(--bg-light); }
@@ -113,9 +113,9 @@
         .receipt-header img { height: 50px; margin-bottom: 10px; }
         .receipt-header h3 { color: var(--text-dark); font-size: 24px; margin: 0; }
         .receipt-header p { color: #666; font-size: 14px; margin-top: 5px; font-weight: 600; }
-        
+
         .receipt-details p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; border-bottom: 1px dotted #eee; padding-bottom: 5px; }
-        .receipt-total { font-size: 20px !important; font-weight: bold; color: var(--primary-green); border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; }
+        .receipt-total { font-size: 20px !important; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; } /* এখান থেকে color সরানো হয়েছে কারণ JS দিয়ে কালার দেওয়া হবে */
 
         .btn-print { width: 100%; padding: 12px; background: var(--primary-blue); color: white; font-size: 16px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
@@ -154,7 +154,7 @@
     <main>
         <div class="payment-card" id="paymentFormCard">
             <h2><i class="fas fa-hand-holding-usd"></i> পেমেন্ট গ্রহণ করুন</h2>
-            
+
             <div id="loader"><i class="fas fa-spinner fa-spin"></i> ডাটা লোড হচ্ছে...</div>
 
             <div class="search-box-container">
@@ -174,7 +174,7 @@
                 <label>জমার পরিমাণ লিখুন:</label>
                 <div class="amount-wrapper">
                     <span>৳</span>
-                    <input type="number" id="payAmount" placeholder="500" min="1">
+                    <input type="number" id="payAmount" placeholder="500"> 
                 </div>
             </div>
 
@@ -203,7 +203,7 @@
     <script>
         // এখানে আপনার আপডেট করা Web App URL বসান
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
-        
+
         let allMembers = [];
         let searchInput = document.getElementById('searchInput');
         let autocompleteList = document.getElementById('autocomplete-list');
@@ -224,7 +224,7 @@
         searchInput.addEventListener('input', function() {
             let val = this.value;
             autocompleteList.innerHTML = '';
-            
+
             if (!val) {
                 autocompleteList.style.display = 'none';
                 hideForm();
@@ -241,7 +241,7 @@
                     let div = document.createElement('div');
                     div.className = 'autocomplete-item';
                     div.innerHTML = `<strong>${m.id}</strong> <span>${m.name}</span>`;
-                    
+
                     div.addEventListener('click', function() {
                         searchInput.value = m.name;
                         autocompleteList.style.display = 'none';
@@ -258,7 +258,7 @@
             document.getElementById('memberDetails').style.display = 'block';
             document.getElementById('amountGroup').style.display = 'block';
             document.getElementById('btnPay').style.display = 'block';
-            
+
             document.getElementById('selectedRowIndex').value = m.rowIndex;
             document.getElementById('selectedId').value = m.id;
             document.getElementById('lblName').innerText = m.name;
@@ -274,8 +274,10 @@
 
         function processPayment() {
             let amount = document.getElementById('payAmount').value;
-            if(!amount || amount <= 0) {
-                alert("অনুগ্রহ করে সঠিক টাকার পরিমাণ দিন!");
+            
+            // এখানে amount <= 0 এর বদলে amount == 0 দেওয়া হয়েছে, যাতে মাইনাস ইনপুট কাজ করে
+            if(!amount || amount == 0) {
+                alert("অনুগ্রহ করে সঠিক টাকার পরিমাণ দিন (০ ব্যতীত)!");
                 return;
             }
 
@@ -316,11 +318,20 @@
             document.getElementById('receiptCard').style.display = 'block';
 
             document.getElementById('recDate').innerText = date;
-            document.getElementById('recTrx').innerText = "WAF-" + Math.floor(Math.random() * 90000 + 10000); // WAF (Bondhu Kollan Songstha)
+            document.getElementById('recTrx').innerText = "WAF-" + Math.floor(Math.random() * 90000 + 10000); 
             document.getElementById('recId').innerText = document.getElementById('selectedId').value;
             document.getElementById('recName').innerText = document.getElementById('lblName').innerText;
             document.getElementById('recPhone').innerText = document.getElementById('lblPhone').innerText;
-            document.getElementById('recAmount').innerText = "৳ " + parseInt(amount).toLocaleString('bn-BD');
+            
+            let amountDisplay = document.getElementById('recAmount');
+            amountDisplay.innerText = "৳ " + parseInt(amount).toLocaleString('bn-BD');
+
+            // মাইনাস ফিগার হলে লাল রং করার লজিক
+            if (amount < 0) {
+                amountDisplay.style.color = "red";
+            } else {
+                amountDisplay.style.color = "var(--primary-green)";
+            }
         }
 
         document.addEventListener('click', function(e) {
