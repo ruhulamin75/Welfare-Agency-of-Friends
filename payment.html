@@ -115,7 +115,7 @@
         .receipt-header p { color: #666; font-size: 14px; margin-top: 5px; font-weight: 600; }
 
         .receipt-details p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; border-bottom: 1px dotted #eee; padding-bottom: 5px; }
-        .receipt-total { font-size: 20px !important; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; } /* এখান থেকে color সরানো হয়েছে কারণ JS দিয়ে কালার দেওয়া হবে */
+        .receipt-total { font-size: 20px !important; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; }
 
         .btn-print { width: 100%; padding: 12px; background: var(--primary-blue); color: white; font-size: 16px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
@@ -195,7 +195,8 @@
                 <p><span>মোবাইল নম্বর:</span> <strong id="recPhone"></strong></p>
                 <p class="receipt-total"><span>জমার পরিমাণ:</span> <span id="recAmount"></span></p>
             </div>
-            <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> রিসিট প্রিন্ট করুন</button>
+            
+            <button class="btn-print" onclick="printReceipt()"><i class="fas fa-print"></i> রিসিট প্রিন্ট করুন</button>
             <button class="btn-print" style="background:#666; margin-top:10px;" onclick="window.location.reload()"><i class="fas fa-redo"></i> নতুন পেমেন্ট</button>
         </div>
     </main>
@@ -317,8 +318,11 @@
             document.getElementById('paymentFormCard').style.display = 'none';
             document.getElementById('receiptCard').style.display = 'block';
 
+            // নতুন আপডেট ১: ডাবল হওয়া ঠেকাতে ইউনিক ট্রানজেকশন আইডি
+            let uniqueId = "WAF-" + Date.now() + "-" + Math.floor(Math.random() * 100);
+
             document.getElementById('recDate').innerText = date;
-            document.getElementById('recTrx').innerText = "WAF-" + Math.floor(Math.random() * 90000 + 10000); 
+            document.getElementById('recTrx').innerText = uniqueId; 
             document.getElementById('recId').innerText = document.getElementById('selectedId').value;
             document.getElementById('recName').innerText = document.getElementById('lblName').innerText;
             document.getElementById('recPhone').innerText = document.getElementById('lblPhone').innerText;
@@ -326,12 +330,32 @@
             let amountDisplay = document.getElementById('recAmount');
             amountDisplay.innerText = "৳ " + parseInt(amount).toLocaleString('bn-BD');
 
-            // মাইনাস ফিগার হলে লাল রং করার লজিক
+            // আগের আপডেট: মাইনাস ফিগার হলে লাল রং করার লজিক
             if (amount < 0) {
                 amountDisplay.style.color = "red";
             } else {
                 amountDisplay.style.color = "var(--primary-green)";
             }
+        }
+
+        // নতুন আপডেট ২: পিডিএফ সেভ করার সময় ফাইলের নাম ট্রানজেকশন আইডি করার ফাংশন
+        function printReceipt() {
+            // রিসিট থেকে ট্রানজেকশন আইডিটি নেওয়া
+            let trxId = document.getElementById('recTrx').innerText;
+            
+            // বর্তমান পেজের আসল টাইটেলটি সেভ করে রাখা
+            let originalTitle = document.title;
+            
+            // পেজের টাইটেল পরিবর্তন করে রিসিট নম্বর করে দেওয়া (এটিই PDF ফাইলের নাম হবে)
+            document.title = "Receipt_" + trxId;
+            
+            // প্রিন্ট ডায়ালগ ওপেন করা
+            window.print();
+            
+            // প্রিন্ট ডায়ালগ আসার পর পেজের টাইটেল আবার আগের অবস্থায় ফিরিয়ে আনা
+            setTimeout(function() {
+                document.title = originalTitle;
+            }, 1000);
         }
 
         document.addEventListener('click', function(e) {
