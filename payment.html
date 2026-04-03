@@ -82,10 +82,9 @@
             display: none; 
             border: 2px dashed #ddd; 
             position: relative; 
-            overflow: hidden; /* জলছাপ যেন বাইরে না যায় */
+            overflow: hidden; 
         }
 
-        /* ব্যাকগ্রাউন্ড জলছাপ (Watermark) */
         .receipt-container::before {
             content: "";
             position: absolute;
@@ -94,16 +93,15 @@
             transform: translate(-50%, -50%);
             width: 70%; 
             height: 70%;
-            background-image: url('logo.png'); /* আপনার লগো ফাইল */
+            background-image: url('logo.png'); 
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.08; /* মাত্র ৮% দৃশ্যমান থাকবে (ঝাপসা) */
+            opacity: 0.08; 
             z-index: 0;
             pointer-events: none;
         }
 
-        /* রিসিটের লেখার উপরে যেন জলছাপ না আসে */
         .receipt-container > * {
             position: relative;
             z-index: 1;
@@ -115,11 +113,10 @@
         .receipt-header p { color: #666; font-size: 14px; margin-top: 5px; font-weight: 600; }
 
         .receipt-details p { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; border-bottom: 1px dotted #eee; padding-bottom: 5px; }
-        .receipt-total { font-size: 20px !important; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; }
+        .receipt-total { font-size: 20px !important; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px !important; border-bottom: none !important; margin-top: 10px; color: var(--primary-blue); }
 
         .btn-print { width: 100%; padding: 12px; background: var(--primary-blue); color: white; font-size: 16px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
-        /* প্রিন্ট করার সময়ের ডিজাইন */
         @media print {
             body * { visibility: hidden; }
             .receipt-container, .receipt-container * { visibility: visible; }
@@ -165,7 +162,7 @@
             <div class="member-details" id="memberDetails">
                 <input type="hidden" id="selectedRowIndex">
                 <input type="hidden" id="selectedId">
-                <p><strong>নাম:</strong> <span id="lblName"></span></p>
+                <input type="hidden" id="previousTotal"> <p><strong>নাম:</strong> <span id="lblName"></span></p>
                 <p><strong>মোবাইল:</strong> <span id="lblPhone"></span></p>
                 <p><strong>বর্তমান জমা:</strong> <span id="lblTotal" class="current-deposit"></span></p>
             </div>
@@ -193,16 +190,16 @@
                 <p><span>সদস্য আইডি:</span> <strong id="recId"></strong></p>
                 <p><span>সদস্যের নাম:</span> <strong id="recName"></strong></p>
                 <p><span>মোবাইল নম্বর:</span> <strong id="recPhone"></strong></p>
-                <p class="receipt-total"><span>জমার পরিমাণ:</span> <span id="recAmount"></span></p>
+                <p><span>আজকের জমার পরিমাণ:</span> <strong id="recAmount" style="font-size: 18px;"></strong></p>
+                <p class="receipt-total"><span>সর্বমোট জমা:</span> <span id="recTotalDeposit"></span></p>
             </div>
-            
+
             <button class="btn-print" onclick="printReceipt()"><i class="fas fa-print"></i> রিসিট প্রিন্ট করুন</button>
             <button class="btn-print" style="background:#666; margin-top:10px;" onclick="window.location.reload()"><i class="fas fa-redo"></i> নতুন পেমেন্ট</button>
         </div>
     </main>
 
     <script>
-        // এখানে আপনার আপডেট করা Web App URL বসান
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
 
         let allMembers = [];
@@ -262,6 +259,10 @@
 
             document.getElementById('selectedRowIndex').value = m.rowIndex;
             document.getElementById('selectedId').value = m.id;
+            
+            // রিসিটে সর্বমোট জমা হিসাব করার জন্য পূর্বের জমা সেভ রাখা হচ্ছে
+            document.getElementById('previousTotal').value = m.totalDeposit || 0; 
+
             document.getElementById('lblName').innerText = m.name;
             document.getElementById('lblPhone').innerText = m.phone;
             document.getElementById('lblTotal').innerText = "৳ " + (m.totalDeposit || 0);
@@ -275,8 +276,7 @@
 
         function processPayment() {
             let amount = document.getElementById('payAmount').value;
-            
-            // এখানে amount <= 0 এর বদলে amount == 0 দেওয়া হয়েছে, যাতে মাইনাস ইনপুট কাজ করে
+
             if(!amount || amount == 0) {
                 alert("অনুগ্রহ করে সঠিক টাকার পরিমাণ দিন (০ ব্যতীত)!");
                 return;
@@ -318,7 +318,6 @@
             document.getElementById('paymentFormCard').style.display = 'none';
             document.getElementById('receiptCard').style.display = 'block';
 
-            // নতুন আপডেট ১: ডাবল হওয়া ঠেকাতে ইউনিক ট্রানজেকশন আইডি
             let uniqueId = "WAF-" + Date.now() + "-" + Math.floor(Math.random() * 100);
 
             document.getElementById('recDate').innerText = date;
@@ -326,33 +325,29 @@
             document.getElementById('recId').innerText = document.getElementById('selectedId').value;
             document.getElementById('recName').innerText = document.getElementById('lblName').innerText;
             document.getElementById('recPhone').innerText = document.getElementById('lblPhone').innerText;
-            
+
             let amountDisplay = document.getElementById('recAmount');
             amountDisplay.innerText = "৳ " + parseInt(amount).toLocaleString('bn-BD');
 
-            // আগের আপডেট: মাইনাস ফিগার হলে লাল রং করার লজিক
             if (amount < 0) {
                 amountDisplay.style.color = "red";
             } else {
                 amountDisplay.style.color = "var(--primary-green)";
             }
+
+            // নতুন আপডেট: পূর্বের জমার সাথে আজকের জমা যোগ করে সর্বমোট জমার হিসাব
+            let prevTotal = parseFloat(document.getElementById('previousTotal').value) || 0;
+            let currentAmount = parseFloat(amount) || 0;
+            let newTotalDeposit = prevTotal + currentAmount;
+
+            document.getElementById('recTotalDeposit').innerText = "৳ " + newTotalDeposit.toLocaleString('bn-BD');
         }
 
-        // নতুন আপডেট ২: পিডিএফ সেভ করার সময় ফাইলের নাম ট্রানজেকশন আইডি করার ফাংশন
         function printReceipt() {
-            // রিসিট থেকে ট্রানজেকশন আইডিটি নেওয়া
             let trxId = document.getElementById('recTrx').innerText;
-            
-            // বর্তমান পেজের আসল টাইটেলটি সেভ করে রাখা
             let originalTitle = document.title;
-            
-            // পেজের টাইটেল পরিবর্তন করে রিসিট নম্বর করে দেওয়া (এটিই PDF ফাইলের নাম হবে)
             document.title = "Receipt_" + trxId;
-            
-            // প্রিন্ট ডায়ালগ ওপেন করা
             window.print();
-            
-            // প্রিন্ট ডায়ালগ আসার পর পেজের টাইটেল আবার আগের অবস্থায় ফিরিয়ে আনা
             setTimeout(function() {
                 document.title = originalTitle;
             }, 1000);
