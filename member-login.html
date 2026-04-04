@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সদস্য লগইন - বন্ধু কল্যাণ সংস্থা</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -86,8 +86,8 @@
         }
 
         .input-group { position: relative; margin-bottom: 20px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 18px; }
-        
+        .input-group i.icon-left { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 18px; }
+
         .input-group input {
             width: 100%;
             padding: 15px 15px 15px 45px;
@@ -97,6 +97,26 @@
             border-radius: 10px;
             outline: none;
             transition: 0.3s;
+        }
+
+        /* পাসওয়ার্ড আইকনের জন্য নতুন CSS */
+        .input-group i#togglePassword {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .input-group i#togglePassword:hover {
+            color: var(--primary-blue);
+        }
+
+        #loginPass {
+            padding-right: 45px; /* Eye icon এর জন্য ডানপাশে জায়গা তৈরি */
         }
 
         .input-group input:focus {
@@ -167,18 +187,19 @@
             </div>
             <h2>সদস্য লগইন</h2>
             <p>আপনার প্রোফাইল ও জমার হিসাব দেখতে লগইন করুন</p>
-            
+
             <div id="loader"><i class="fas fa-spinner fa-spin"></i> সার্ভার প্রস্তুত হচ্ছে...</div>
 
             <form id="memberLoginForm">
                 <div class="input-group">
-                    <i class="fas fa-phone-alt"></i>
+                    <i class="fas fa-phone-alt icon-left"></i>
                     <input type="tel" id="loginPhone" placeholder="আপনার মোবাইল নম্বর" required>
                 </div>
-                
+
                 <div class="input-group">
-                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-lock icon-left"></i>
                     <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" required>
+                    <i class="fas fa-eye" id="togglePassword"></i>
                 </div>
 
                 <button type="submit" class="btn-login" id="loginBtn">
@@ -194,7 +215,7 @@
     <script>
         // আপনার Web App URL এখানে বসান
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
-        
+
         let allMembers = [];
         const loader = document.getElementById('loader');
         const loginBtn = document.getElementById('loginBtn');
@@ -203,7 +224,7 @@
         window.onload = function() {
             loader.style.display = 'block';
             loginBtn.disabled = true; // ডাটা লোড না হওয়া পর্যন্ত বাটন বন্ধ থাকবে
-            
+
             fetch(SCRIPT_URL + '?action=getMembers')
                 .then(res => res.json())
                 .then(data => {
@@ -216,9 +237,23 @@
                 });
         }
 
+        // Eye Button এর মাধ্যমে পাসওয়ার্ড Show/Hide করার কোড
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('loginPass');
+
+        togglePassword.addEventListener('click', function () {
+            // type অ্যাট্রিবিউট চেক করে text অথবা password এ পরিবর্তন করা
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // আইকনের ক্লাস পরিবর্তন করা (fa-eye থেকে fa-eye-slash)
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
         document.getElementById('memberLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const phone = document.getElementById('loginPhone').value.trim();
             const pass = document.getElementById('loginPass').value;
             const errorMsg = document.getElementById('error-msg');
@@ -229,10 +264,10 @@
             if (user) {
                 errorMsg.style.display = 'none';
                 loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লগইন হচ্ছে...';
-                
+
                 // সফল হলে ইউজারের ডাটা ব্রাউজারের LocalStorage এ সেভ করে রাখা
                 localStorage.setItem('loggedInMember', JSON.stringify(user));
-                
+
                 // প্রোফাইল পেজে নিয়ে যাওয়া
                 setTimeout(() => {
                     window.location.href = 'member-profile.html';
