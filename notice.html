@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        // অ্যাডমিন লগইন করা না থাকলে লগইন পেজে পাঠিয়ে দেবে
         if(localStorage.getItem('adminLoggedIn') !== 'true') {
-            window.location.href = 'login.html'; 
+            window.location.href = 'login.html'; // লগইন করা না থাকলে বের করে দেবে
         }
     </script>
     <title>নোটিশ বোর্ড ম্যানেজমেন্ট - বন্ধু কল্যাণ সংস্থা</title>
@@ -112,7 +111,7 @@
 
     <script>
         // আপনার নতুন Web App URL টি এখানে দিন
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwVbbm8h3wFCS4jTLXZi6ot0TC_UYkw9nB4ZcS0lJq-I25d5nCQBUcKio36MLo2c4JCRA/exec'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNEz2--1q1yoGgXrpNWa733B_2iaB2YaaLSm-gr1v1XWyPL7XN_SAZleqxlb0WihEq4w/exec'; 
         
         let editingRow = null; // এডিট করার ট্র্যাক রাখার জন্য
 
