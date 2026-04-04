@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আমার প্রোফাইল - বন্ধু কল্যাণ সংস্থা</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,6 @@
             color: var(--text-dark);
         }
 
-        /* হেডার */
         header {
             background-color: #fff;
             padding: 15px 30px;
@@ -74,7 +73,6 @@
             gap: 20px;
         }
 
-        /* কার্ডের সাধারণ স্টাইল */
         .card {
             background: #fff;
             padding: 30px;
@@ -94,7 +92,6 @@
         .card-header i { font-size: 28px; color: var(--primary-green); }
         .card-header h3 { font-size: 22px; color: var(--primary-blue); }
 
-        /* প্রোফাইল তথ্য */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -110,11 +107,10 @@
 
         .info-item label { display: block; color: #666; font-size: 14px; margin-bottom: 5px; }
         .info-item .value { font-size: 18px; font-weight: 600; color: var(--text-dark); }
-        
+
         .deposit-highlight { border-left-color: #ff9800; background: #fff8e1; }
         .deposit-highlight .value { color: #ff9800; font-size: 22px; }
 
-        /* পাসওয়ার্ড পরিবর্তন ফর্ম */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
         .form-group input {
@@ -148,6 +144,26 @@
 
         .btn-update:hover { opacity: 0.9; transform: translateY(-2px); }
 
+        /* ছবি আপলোডের কাস্টম ডিজাইন */
+        .profile-pic-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .profile-pic-container img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-green);
+            padding: 3px;
+            margin-bottom: 15px;
+            background: #fff;
+            box-shadow: var(--shadow);
+        }
+        .file-input-wrapper {
+            margin-bottom: 15px;
+        }
+
         #liveSyncLoader { text-align: center; color: var(--primary-blue); font-size: 14px; margin-bottom: 10px; display: none; }
 
         @media (max-width: 600px) {
@@ -174,6 +190,19 @@
                 <i class="fas fa-user-circle"></i>
                 <h3>আমার প্রোফাইল</h3>
             </div>
+            
+            <div class="profile-pic-container">
+                <img id="profImage" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Picture">
+                
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" accept="image/*" style="font-family: 'Hind Siliguri', sans-serif;">
+                </div>
+                
+                <button class="btn-update" id="btnUploadImage" style="width: auto; margin: 0 auto; padding: 8px 20px;">
+                    <i class="fas fa-camera"></i> ছবি আপলোড/পরিবর্তন করুন
+                </button>
+            </div>
+
             <div class="info-grid">
                 <div class="info-item">
                     <label>সদস্য আইডি</label>
@@ -228,36 +257,32 @@
     </main>
 
     <script>
-        // আপনার Web App URL এখানে বসান
+        // আপনার Web App URL এখানে বসান (Deployment এর পর পাওয়া নতুন লিংক)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
-        
+
         let currentUser = null;
 
         window.onload = function() {
-            // LocalStorage থেকে ইউজার ডাটা চেক করা
             const userData = localStorage.getItem('loggedInMember');
-            
+
             if(!userData) {
-                // ডাটা না থাকলে তাকে জোর করে লগইন পেজে পাঠিয়ে দেবে (Security)
                 window.location.href = 'member-login.html';
                 return;
             }
 
             currentUser = JSON.parse(userData);
-            displayData(currentUser); // স্ক্রিনে ডাটা দেখানো
-            
-            // ব্যাকগ্রাউন্ডে লেটেস্ট ডাটা শিট থেকে এনে আপডেট করা (Live Sync)
+            displayData(currentUser); 
+
             document.getElementById('liveSyncLoader').style.display = 'block';
             fetch(SCRIPT_URL + '?action=getMembers')
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('liveSyncLoader').style.display = 'none';
-                    // শিট থেকে এই ইউজারের লেটেস্ট তথ্য খুঁজে বের করা
                     let latestUserData = data.find(m => m.id == currentUser.id);
                     if(latestUserData) {
                         currentUser = latestUserData;
-                        localStorage.setItem('loggedInMember', JSON.stringify(currentUser)); // LocalStorage আপডেট করা
-                        displayData(currentUser); // স্ক্রিন আপডেট করা
+                        localStorage.setItem('loggedInMember', JSON.stringify(currentUser)); 
+                        displayData(currentUser); 
                     }
                 })
                 .catch(err => console.error(err));
@@ -269,17 +294,21 @@
             document.getElementById('profName').innerText = user.name;
             document.getElementById('profPhone').innerText = user.phone;
             document.getElementById('profAddress').innerText = user.address || 'তথ্য নেই';
-            
+
             let total = parseInt(user.totalDeposit) || 0;
             document.getElementById('profTotal').innerText = "৳ " + total.toLocaleString('bn-BD');
             document.getElementById('profLast').innerText = user.lastDeposit ? user.lastDeposit : 'তথ্য নেই';
+
+            // যদি ইউজারের ছবি ডাটাবেসে থাকে, তাহলে সেটা দেখাবে
+            if(user.profilePic && user.profilePic.trim() !== "") {
+                document.getElementById('profImage').src = user.profilePic;
+            }
         }
 
-        // লগআউট ফাংশন
         function logout() {
             if(confirm("আপনি কি প্রোফাইল থেকে লগআউট করতে চান?")) {
-                localStorage.removeItem('loggedInMember'); // ব্রাউজার থেকে ডাটা মুছে ফেলা
-                window.location.href = 'index.html'; // মেইন পেজে নিয়ে যাওয়া
+                localStorage.removeItem('loggedInMember'); 
+                window.location.href = 'index.html'; 
             }
         }
 
@@ -291,7 +320,6 @@
             let newPass = document.getElementById('newPass').value;
             let confirmPass = document.getElementById('confirmPass').value;
 
-            // ভ্যালিডেশন চেক
             if(currentPass !== currentUser.password) {
                 alert("আপনার বর্তমান পাসওয়ার্ড ভুল হয়েছে!");
                 return;
@@ -309,15 +337,13 @@
             btnUpdate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপডেট হচ্ছে...';
             btnUpdate.disabled = true;
 
-            // গুগল শিটে নতুন পাসওয়ার্ড পাঠানোর জন্য ডাটা রেডি করা
-            // আমাদের কোডের updateMember ফাংশনটি name, phone, password, address আপডেট করে
             let params = new URLSearchParams();
             params.append('action', 'updateMember');
             params.append('rowIndex', currentUser.rowIndex);
             params.append('name', currentUser.name);
             params.append('phone', currentUser.phone);
             params.append('address', currentUser.address);
-            params.append('password', newPass); // শুধু পাসওয়ার্ড নতুনটা যাবে
+            params.append('password', newPass); 
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -327,11 +353,8 @@
             .then(data => {
                 if(data.result === 'success') {
                     alert("আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!");
-                    // LocalStorage এ নতুন পাসওয়ার্ড সেভ করা
                     currentUser.password = newPass;
                     localStorage.setItem('loggedInMember', JSON.stringify(currentUser));
-                    
-                    // ফর্ম ক্লিয়ার করা
                     document.getElementById('passwordForm').reset();
                 }
             })
@@ -342,6 +365,65 @@
                 btnUpdate.innerHTML = '<i class="fas fa-save"></i> পাসওয়ার্ড আপডেট করুন';
                 btnUpdate.disabled = false;
             });
+        });
+
+        // নতুন: ছবি আপলোড করার লজিক
+        document.getElementById('btnUploadImage').addEventListener('click', function() {
+            let fileInput = document.getElementById('imageInput');
+            let file = fileInput.files[0];
+            
+            if(!file) {
+                alert("দয়া করে আগে একটি ছবি নির্বাচন করুন!");
+                return;
+            }
+
+            // ছবির সাইজ ৩ মেগাবাইটের বেশি হলে আটকে দেবে
+            if(file.size > 3 * 1024 * 1024) {
+                alert("ছবির সাইজ অনেক বড়! দয়া করে ৩ মেগাবাইটের কম সাইজের ছবি দিন।");
+                return;
+            }
+
+            let btnUpload = document.getElementById('btnUploadImage');
+            btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে (কিছুক্ষণ অপেক্ষা করুন)...';
+            btnUpload.disabled = true;
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let base64Data = e.target.result.split(",")[1]; 
+                
+                let params = new URLSearchParams();
+                params.append('action', 'uploadProfilePic');
+                params.append('rowIndex', currentUser.rowIndex); 
+                params.append('fileName', currentUser.id + "_profile_pic"); // ইউজারের আইডির সাথে মিলিয়ে নাম
+                params.append('mimeType', file.type);
+                params.append('base64', base64Data);
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: params
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.result === 'success') {
+                        alert("আপনার প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!");
+                        document.getElementById('profImage').src = data.url; 
+                        
+                        currentUser.profilePic = data.url;
+                        localStorage.setItem('loggedInMember', JSON.stringify(currentUser));
+                    } else {
+                        alert("আপলোড ব্যর্থ হয়েছে: " + data.error);
+                    }
+                })
+                .catch(err => {
+                    alert("আপলোড করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করে আবার চেষ্টা করুন।");
+                })
+                .finally(() => {
+                    btnUpload.innerHTML = '<i class="fas fa-camera"></i> ছবি আপলোড/পরিবর্তন করুন';
+                    btnUpload.disabled = false;
+                    fileInput.value = ""; // আপলোড শেষে ইনপুট ফিল্ড ক্লিয়ার করে দেওয়া
+                });
+            };
+            reader.readAsDataURL(file);
         });
     </script>
 </body>
