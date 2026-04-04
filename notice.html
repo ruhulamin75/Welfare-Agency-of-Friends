@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // অ্যাডমিন লগইন করা না থাকলে লগইন পেজে পাঠিয়ে দেবে
+        if(localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html'; 
+        }
+    </script>
+    <title>নোটিশ বোর্ড ম্যানেজমেন্ট - বন্ধু কল্যাণ সংস্থা</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0A369D;
+            --primary-green: #7CD03A;
+            --bg-light: #F4F7F6;
+            --text-dark: #333;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --card-hover: 0 12px 40px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-light); color: var(--text-dark); }
+
+        /* হেডার ডিজাইন */
+        header { background-color: #fff; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--primary-blue); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .header-left { display: flex; align-items: center; }
+        .header-left img { height: 40px; margin-right: 15px; }
+        .header-left span { font-size: 22px; font-weight: 700; color: var(--primary-blue); }
+        
+        .btn-back { background: var(--primary-blue); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-back:hover { background: #082d85; }
+
+        main { margin-top: 100px; padding: 0 30px 30px 30px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .page-title { font-size: 24px; color: var(--primary-blue); margin-bottom: 25px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+        /* ফর্ম এবং নোটিশ কার্ড ডিজাইন */
+        .card-box { background: #fff; padding: 30px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 30px; border-top: 4px solid var(--primary-green); }
+        .card-box h3 { margin-bottom: 20px; color: var(--text-dark); font-size: 18px; }
+
+        .input-group { display: flex; gap: 15px; align-items: center; }
+        .input-group input { flex: 1; padding: 15px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--primary-blue); box-shadow: 0 0 5px rgba(10, 54, 157, 0.2); }
+        
+        .btn-save { background: var(--primary-green); color: #fff; border: none; padding: 15px 25px; border-radius: 10px; font-size: 16px; font-weight: 600; font-family: 'Hind Siliguri', sans-serif; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .btn-save:hover { background: #68b32e; }
+
+        /* নোটিশ লিস্ট ডিজাইন */
+        .notice-list-container { display: flex; flex-direction: column; gap: 15px; }
+        .notice-item { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary-blue); transition: 0.3s; }
+        .notice-item:hover { box-shadow: var(--card-hover); transform: translateX(5px); }
+        .notice-text { font-size: 16px; color: #444; line-height: 1.5; flex: 1; padding-right: 20px; }
+        
+        .action-btns { display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-action { width: 40px; height: 40px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: 0.3s; color: white; }
+        .btn-edit { background-color: #f39c12; }
+        .btn-edit:hover { background-color: #d68910; }
+        .btn-delete { background-color: #ff4757; }
+        .btn-delete:hover { background-color: #e84118; }
+
+        #loader { text-align: center; color: var(--primary-blue); font-weight: 600; padding: 20px; font-size: 18px; display: none; }
+
+        @media (max-width: 768px) {
+            .input-group { flex-direction: column; }
+            .btn-save { width: 100%; justify-content: center; }
+            .notice-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .notice-text { padding-right: 0; }
+            .header-left span { display: none; }
+            main { padding: 20px; margin-top: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="logo.png" alt="Logo">
+            <span>বন্ধু কল্যাণ সংস্থা</span>
+        </div>
+        <a href="dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main>
+        <div class="page-title">
+            <i class="fas fa-bullhorn" style="color: #ff4757;"></i> নোটিশ বোর্ড ম্যানেজমেন্ট
+        </div>
+
+        <div class="card-box">
+            <h3 id="formTitle">নতুন নোটিশ যুক্ত করুন</h3>
+            <div class="input-group">
+                <input type="text" id="noticeInput" placeholder="এখানে নোটিশের বিস্তারিত লিখুন..." autocomplete="off">
+                <button class="btn-save" id="btnSave" onclick="saveNotice()">
+                    <i class="fas fa-plus-circle"></i> যুক্ত করুন
+                </button>
+            </div>
+        </div>
+
+        <div class="card-box" style="border-top-color: var(--primary-blue);">
+            <h3>সকল নোটিশ</h3>
+            <div id="loader"><i class="fas fa-spinner fa-spin"></i> ডাটা লোড হচ্ছে...</div>
+            <div class="notice-list-container" id="noticesContainer">
+                </div>
+        </div>
+    </main>
+
+    <script>
+        // আপনার নতুন Web App URL টি এখানে দিন
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwVbbm8h3wFCS4jTLXZi6ot0TC_UYkw9nB4ZcS0lJq-I25d5nCQBUcKio36MLo2c4JCRA/exec'; 
+        
+        let editingRow = null; // এডিট করার ট্র্যাক রাখার জন্য
+
+        // নোটিশ লোড করার ফাংশন
+        function loadNotices() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('noticesContainer').innerHTML = '';
+
+            fetch(scriptURL)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    let html = '';
+                    
+                    if(data.length === 0) {
+                        html = '<p style="text-align:center; color:#777;">কোনো নোটিশ পাওয়া যায়নি।</p>';
+                    } else {
+                        data.forEach(notice => {
+                            // notice.text-এর ভেতরের কোটেশন মার্ক এস্কেপ করা হচ্ছে যাতে বাটনে এরর না আসে
+                            let safeText = notice.text.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                            
+                            html += `
+                            <div class="notice-item">
+                                <div class="notice-text">${notice.text}</div>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editNotice(${notice.rowNumber}, '${safeText}')" title="এডিট করুন">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="deleteNotice(${notice.rowNumber})" title="ডিলিট করুন">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>`;
+                        });
+                    }
+                    document.getElementById('noticesContainer').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('loader').innerHTML = 'ডাটা লোড করতে সমস্যা হয়েছে!';
+                });
+        }
+
+        // নোটিশ সেভ বা আপডেট করার ফাংশন
+        function saveNotice() {
+            let text = document.getElementById('noticeInput').value.trim();
+            if(!text) return alert("নোটিশ ফাঁকা রাখা যাবে না!");
+
+            let btn = document.getElementById('btnSave');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং...';
+            btn.disabled = true;
+
+            let action = editingRow ? "edit" : "add";
+            let bodyData = `action=${action}&noticeText=${encodeURIComponent(text)}`;
+            if(editingRow) bodyData += `&rowNumber=${editingRow}`;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: bodyData
+            }).then(res => res.text()).then(data => {
+                document.getElementById('noticeInput').value = '';
+                btn.innerHTML = '<i class="fas fa-plus-circle"></i> যুক্ত করুন';
+                btn.disabled = false;
+                document.getElementById('formTitle').innerText = "নতুন নোটিশ যুক্ত করুন";
+                editingRow = null; 
+                loadNotices(); 
+            });
+        }
+
+        // নোটিশ এডিট মোড চালু করার ফাংশন
+        function editNotice(row, text) {
+            document.getElementById('noticeInput').value = text;
+            editingRow = row;
+            document.getElementById('formTitle').innerText = "নোটিশ এডিট করুন";
+            
+            let btn = document.getElementById('btnSave');
+            btn.innerHTML = '<i class="fas fa-save"></i> আপডেট করুন';
+            
+            // পেজের উপরে স্ক্রল করা এবং ইনপুট বক্সে ফোকাস করা
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('noticeInput').focus();
+        }
+
+        // নোটিশ ডিলিট করার ফাংশন
+        function deleteNotice(row) {
+            if(!confirm("আপনি কি সত্যিই এই নোটিশটি ডিলিট করতে চান?")) return;
+            
+            // ডিলিট বোতামে ক্লিক করলে সরাসরি ডাটাবেসে রিকোয়েস্ট যাবে
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `action=delete&rowNumber=${row}`
+            }).then(res => res.text()).then(data => {
+                loadNotices(); // ডিলিট হওয়ার পর তালিকা আপডেট হবে
+            });
+        }
+
+        // পেজ লোড হলে নোটিশ দেখাবে
+        window.onload = loadNotices;
+    </script>
+
+</body>
+</html>
