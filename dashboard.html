@@ -9,14 +9,14 @@
         }
     </script>
     <title>অ্যাডমিন ড্যাশবোর্ড - বন্ধু কল্যাণ সংস্থা</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* আগের সকল ডিজাইন ঠিক আছে, শুধু নতুন কিছু স্টাইল যোগ করা হয়েছে */
+        /* আপনার অরিজিনাল ডিজাইন - কোনো পরিবর্তন করা হয়নি */
         :root {
             --primary-blue: #0A369D;
             --primary-green: #7CD03A;
@@ -28,7 +28,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-light); color: var(--text-dark); }
-        
+
         header { background-color: #fff; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--primary-blue); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; }
         .header-left { display: flex; align-items: center; }
         .header-left img { height: 40px; margin-right: 15px; }
@@ -51,16 +51,14 @@
         .card-pay i { color: #ff9800; }
         .card h3 { font-size: 20px; font-weight: 600; }
 
-        /* সার্চ সেকশন ও অটোসাজেশন */
         .search-section { background: #fff; padding: 30px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 30px; }
         .search-section h3 { color: var(--primary-blue); margin-bottom: 20px; font-size: 20px; }
-        
+
         .search-box-container { display: flex; gap: 10px; position: relative; }
         .autocomplete-wrapper { position: relative; flex: 1; }
         .autocomplete-wrapper input { width: 100%; padding: 15px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; }
         .autocomplete-wrapper input:focus { border-color: var(--primary-blue); }
-        
-        /* ড্রপডাউন সাজেশন লিস্টের ডিজাইন */
+
         .autocomplete-list { position: absolute; border: 1px solid #ddd; border-top: none; z-index: 99; top: 100%; left: 0; right: 0; background: #fff; max-height: 250px; overflow-y: auto; border-radius: 0 0 10px 10px; box-shadow: var(--shadow); display: none; }
         .autocomplete-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
         .autocomplete-item:hover { background-color: var(--bg-light); color: var(--primary-blue); }
@@ -69,11 +67,10 @@
         .btn-search { background: var(--primary-blue); color: #fff; border: none; padding: 0 25px; border-radius: 10px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; cursor: pointer; transition: 0.3s; }
         .btn-search:hover { background: #082d85; }
 
-        /* প্রোফাইল কার্ড ও এডিট মোড */
         .profile-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: var(--shadow); display: none; border-left: 5px solid var(--primary-green); position: relative; }
         .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .profile-header h3 { color: var(--text-dark); font-size: 22px; }
-        
+
         .btn-edit, .btn-save { background: #f0f0f0; color: var(--text-dark); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; transition: 0.3s; font-weight: 600; display: flex; align-items: center; gap: 5px; }
         .btn-edit:hover { background: #e0e0e0; }
         .btn-save { background: var(--primary-green); color: white; display: none; }
@@ -81,15 +78,12 @@
 
         .profile-details p { font-size: 16px; margin-bottom: 15px; color: #555; display: flex; align-items: center; }
         .profile-details strong { width: 140px; color: var(--text-dark); flex-shrink: 0; }
-        
-        /* এডিট করার জন্য ইনপুট ফিল্ড */
-        .edit-input { flex: 1; padding: 8px 12px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid transparent; border-radius: 5px; background: transparent; outline: none; transition: 0.3s; width: 100%; color: #555; }
-        
-        /* যখন এডিট মোড চালু হবে */
-        .editing .edit-input { border: 1px solid var(--primary-blue); background: #fdfdfd; color: #000; }
-        .editing .readonly { background: #f4f4f4; cursor: not-allowed; } /* আইডি এডিট করা যাবে না */
 
-        /* লোডিং স্পিনার */
+        .edit-input { flex: 1; padding: 8px 12px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid transparent; border-radius: 5px; background: transparent; outline: none; transition: 0.3s; width: 100%; color: #555; }
+
+        .editing .edit-input { border: 1px solid var(--primary-blue); background: #fdfdfd; color: #000; }
+        .editing .readonly { background: #f4f4f4; cursor: not-allowed; } 
+
         #loader { display: none; color: var(--primary-blue); font-weight: 600; margin-top: 10px; }
 
         @media (max-width: 768px) {
@@ -144,6 +138,11 @@
                 <button class="btn-edit" id="btnEdit" onclick="toggleEdit()"><i class="fas fa-edit"></i> এডিট করুন</button>
                 <button class="btn-save" id="btnSave" onclick="saveData()"><i class="fas fa-save"></i> সেভ করুন</button>
             </div>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="resImage" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-green);">
+            </div>
+
             <div class="profile-details" id="profileForm">
                 <input type="hidden" id="rowIndex"> <p><strong>আইডি (ID):</strong> <input type="text" id="resId" class="edit-input readonly" readonly></p>
                 <p><strong>নাম:</strong> <input type="text" id="resName" class="edit-input" readonly></p>
@@ -157,15 +156,13 @@
     </main>
 
     <script>
-        // এখানে আপনার গুগল শিটের Web App URL বসান
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
-        
+
         let allMembers = [];
         let searchInput = document.getElementById('searchInput');
         let autocompleteList = document.getElementById('autocomplete-list');
         let loader = document.getElementById('loader');
 
-        // পেজ লোড হওয়ার সাথে সাথে গুগল শিট থেকে সব ডাটা নিয়ে আসবে
         window.onload = function() {
             loader.style.display = 'block';
             fetch(SCRIPT_URL + '?action=getMembers')
@@ -180,17 +177,15 @@
                 });
         }
 
-        // সার্চ বারে টাইপ করার সময় সাজেশন দেখানো
         searchInput.addEventListener('input', function() {
             let val = this.value;
-            autocompleteList.innerHTML = ''; // আগের লিস্ট ক্লিয়ার করা
-            
+            autocompleteList.innerHTML = ''; 
+
             if (!val) {
                 autocompleteList.style.display = 'none';
                 return;
             }
 
-            // নাম বা আইডি অনুযায়ী ফিল্টার করা
             let matches = allMembers.filter(member => 
                 member.id.toString().includes(val) || 
                 member.name.toLowerCase().includes(val.toLowerCase())
@@ -201,12 +196,13 @@
                 matches.forEach(m => {
                     let div = document.createElement('div');
                     div.className = 'autocomplete-item';
-                    // আইডি এবং নাম পাশাপাশি দেখানোর ডিজাইন
-                    div.innerHTML = `<strong>${m.id}</strong> <span>${m.name}</span>`;
                     
-                    // সাজেশনে ক্লিক করলে কার্ডে তথ্য দেখাবে
+                    // এখানে শুধু সাজেশনের নামের পাশে ছোট্ট করে ছবিটা যোগ করে দিয়েছি
+                    let picUrl = (m.profilePic && m.profilePic.trim() !== "") ? m.profilePic : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><img src="${picUrl}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;"> <strong>${m.id}</strong> <span>${m.name}</span></div>`;
+
                     div.addEventListener('click', function() {
-                        searchInput.value = m.name; // বক্সে নাম বসবে
+                        searchInput.value = m.name; 
                         autocompleteList.style.display = 'none';
                         showProfile(m);
                     });
@@ -217,21 +213,26 @@
             }
         });
 
-        // প্রোফাইল কার্ডে তথ্য বসানোর ফাংশন
         function showProfile(m) {
             document.getElementById('memberProfile').style.display = 'block';
-            
-            // ইনপুটে মান বসানো
+
+            // এখানে শুধু ছবি বসানোর লজিকটুকু যোগ করা হয়েছে
+            let resImage = document.getElementById('resImage');
+            if(m.profilePic && m.profilePic.trim() !== "") {
+                resImage.src = m.profilePic;
+            } else {
+                resImage.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            }
+
             document.getElementById('rowIndex').value = m.rowIndex;
             document.getElementById('resId').value = m.id;
             document.getElementById('resName').value = m.name;
             document.getElementById('resPhone').value = m.phone;
-            document.getElementById('resPass').value = m.password; // পাসওয়ার্ড দেখানো হলো
+            document.getElementById('resPass').value = m.password; 
             document.getElementById('resAddress').value = m.address;
             document.getElementById('resTotal').value = "৳ " + m.totalDeposit;
             document.getElementById('resLast').value = m.lastDeposit ? "৳ " + m.lastDeposit : 'তথ্য নেই';
-            
-            // যদি আগে এডিট মোডে থাকে, তবে নরমাল মোডে নিয়ে আসা
+
             document.getElementById('profileForm').classList.remove('editing');
             let inputs = document.querySelectorAll('.edit-input:not(.readonly)');
             inputs.forEach(input => input.setAttribute('readonly', true));
@@ -239,25 +240,21 @@
             document.getElementById('btnSave').style.display = 'none';
         }
 
-        // এডিট মোড চালু করার ফাংশন
         function toggleEdit() {
             document.getElementById('profileForm').classList.add('editing');
-            
-            // readonly সরানো (যাতে এডিট করা যায়), তবে ID, Total Deposit এডিট করা যাবে না
+
             let inputs = document.querySelectorAll('.edit-input:not(.readonly)');
             inputs.forEach(input => input.removeAttribute('readonly'));
-            
+
             document.getElementById('btnEdit').style.display = 'none';
             document.getElementById('btnSave').style.display = 'flex';
         }
 
-        // এডিট করা তথ্য শিটে সেভ করার ফাংশন
         function saveData() {
             let btnSave = document.getElementById('btnSave');
             btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> সেভ হচ্ছে...';
             btnSave.disabled = true;
 
-            // ফর্মের নতুন ডাটা সংগ্রহ
             let params = new URLSearchParams();
             params.append('action', 'updateMember');
             params.append('rowIndex', document.getElementById('rowIndex').value);
@@ -266,7 +263,6 @@
             params.append('password', document.getElementById('resPass').value);
             params.append('address', document.getElementById('resAddress').value);
 
-            // API-তে ডাটা পাঠানো (POST Request)
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: params
@@ -275,7 +271,6 @@
             .then(data => {
                 if(data.result === 'success') {
                     alert('তথ্য সফলভাবে এডিট হয়েছে!');
-                    // পেজ রিলোড দিয়ে নতুন ডাটা লোড করা
                     window.location.reload(); 
                 }
             })
@@ -286,17 +281,16 @@
             });
         }
 
-        // স্ক্রিনের অন্য কোথাও ক্লিক করলে সাজেশন লিস্ট বন্ধ করা
         document.addEventListener('click', function(e) {
             if (e.target.id !== 'searchInput') {
                 autocompleteList.style.display = 'none';
             }
         });
-        // অ্যাডমিন লগআউট ফাংশন
+
         function adminLogout() {
             if(confirm("আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?")) {
-                localStorage.removeItem('adminLoggedIn'); // ব্রাউজার থেকে সেশন মুছে ফেলা
-                window.location.href = 'index.html'; // মেইন পেজে নিয়ে যাওয়া
+                localStorage.removeItem('adminLoggedIn'); 
+                window.location.href = 'index.html'; 
             }
         }
     </script>
