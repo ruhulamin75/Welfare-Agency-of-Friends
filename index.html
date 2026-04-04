@@ -240,11 +240,16 @@
             <i class="fas fa-bell fa-shake"></i> নোটিশ
         </div>
         <div class="notice-content">
-            <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
+            <marquee behavior="scroll" direction="left" scrollamount="6" 
+                     onmouseover="this.stop();" 
+                     onmouseout="setTimeout(() => this.start(), 1000);"
+                     ontouchstart="this.stop();" 
+                     ontouchend="setTimeout(() => this.start(), 1000);">
                 <span id="dynamic-notice">নোটিশ লোড হচ্ছে...</span>
             </marquee>
         </div>
     </div>
+    
     <div class="hero-section">
         <div class="shape-1"></div>
         <div class="shape-2"></div>
@@ -299,7 +304,6 @@
     </script>
 
     <script>
-        // আপনার কপি করা Apps Script এর Web App URL টি এখানে দিন
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyNEz2--1q1yoGgXrpNWa733B_2iaB2YaaLSm-gr1v1XWyPL7XN_SAZleqxlb0WihEq4w/exec';
 
         fetch(scriptURL)
@@ -307,10 +311,8 @@
             .then(data => {
                 let noticeContent = '';
                 data.forEach(notice => {
-                    // প্রতিটি নোটিশের মাঝে একটি স্পেস বা পাইপ (|) দিয়ে যুক্ত করা হচ্ছে
                     noticeContent += `📢 ${notice.text} &nbsp; &nbsp; | &nbsp; &nbsp; `;
                 });
-                // যদি ডাটাবেস ফাঁকা থাকে
                 if(data.length === 0){
                     document.getElementById('dynamic-notice').innerHTML = "এই মুহূর্তে কোনো নতুন নোটিশ নেই।";
                 } else {
