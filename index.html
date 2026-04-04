@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বন্ধু কল্যাণ সংস্থা - ডিজিটাল ম্যানেজমেন্ট সিস্টেম</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -29,8 +29,48 @@
             flex-direction: column;
         }
 
+        /* --- Notice Bar CSS --- */
+        .notice-bar {
+            background-color: var(--primary-blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 6px 20px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+        }
+
+        .notice-title {
+            background-color: #ff4757;
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 15px;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .notice-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .notice-content marquee {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding-top: 2px;
+        }
+
         .hero-section {
-            flex: 1; /* পেজকে পুরোটা জুড়াতে সাহায্য করবে */
+            flex: 1;
             display: flex;
             align-items: center;
             background: linear-gradient(135deg, rgba(10,54,157,0.05) 0%, rgba(124,208,58,0.1) 100%);
@@ -95,7 +135,7 @@
             margin-bottom: 18px;
             font-weight: 600;
         }
-        
+
         .feature-icon {
             flex-shrink: 0;
             width: 28px;
@@ -173,15 +213,38 @@
             .feature-list { display: inline-block; text-align: left; }
             .login-card { padding: 30px 20px; }
         }
+
+        /* নোটিশ বারের মোবাইল রেসপনসিভ */
+        @media (max-width: 768px) {
+            .notice-bar {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+            .notice-title {
+                padding: 3px 12px;
+                margin-right: 10px;
+                font-size: 13px;
+            }
+        }
     </style>
 
-<link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2196f3">
     <link rel="apple-touch-icon" href="icon-192.png">
 
 </head>
 <body>
 
+    <div class="notice-bar">
+        <div class="notice-title">
+            <i class="fas fa-bell fa-shake"></i> নোটিশ
+        </div>
+        <div class="notice-content">
+            <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
+                <span id="dynamic-notice">নোটিশ লোড হচ্ছে...</span>
+            </marquee>
+        </div>
+    </div>
     <div class="hero-section">
         <div class="shape-1"></div>
         <div class="shape-2"></div>
@@ -194,7 +257,7 @@
                 </div>
                 <h2>আমাদের সংস্থার হিসাব এখন <span>ডিজিটাল!</span></h2>
                 <p>নিরাপদ ও স্বচ্ছ হিসাব ব্যবস্থাপনায় আমাদের পথচলা হোক আরও সুন্দর।</p>
-                
+
                 <ul class="feature-list">
                     <li><div class="feature-icon"><i class="fas fa-check"></i></div> ১০০% নিরাপদ ডাটাবেস</li>
                     <li><div class="feature-icon"><i class="fas fa-check"></i></div> ডিজিটাল মানি রিসিট</li>
@@ -224,6 +287,7 @@
     <footer>
         &copy; 2026 বন্ধু কল্যাণ সংস্থা | সর্বস্বত্ব সংরক্ষিত
     </footer>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -232,6 +296,31 @@
                     .catch(err => console.error('Service Worker কানেক্ট হতে সমস্যা হয়েছে:', err));
             });
         }
+    </script>
+
+    <script>
+        // আপনার কপি করা Apps Script এর Web App URL টি এখানে দিন
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyNEz2--1q1yoGgXrpNWa733B_2iaB2YaaLSm-gr1v1XWyPL7XN_SAZleqxlb0WihEq4w/exec';
+
+        fetch(scriptURL)
+            .then(response => response.json())
+            .then(data => {
+                let noticeContent = '';
+                data.forEach(notice => {
+                    // প্রতিটি নোটিশের মাঝে একটি স্পেস বা পাইপ (|) দিয়ে যুক্ত করা হচ্ছে
+                    noticeContent += `📢 ${notice.text} &nbsp; &nbsp; | &nbsp; &nbsp; `;
+                });
+                // যদি ডাটাবেস ফাঁকা থাকে
+                if(data.length === 0){
+                    document.getElementById('dynamic-notice').innerHTML = "এই মুহূর্তে কোনো নতুন নোটিশ নেই।";
+                } else {
+                    document.getElementById('dynamic-notice').innerHTML = noticeContent;
+                }
+            })
+            .catch(error => {
+                document.getElementById('dynamic-notice').innerHTML = "নোটিশ লোড করতে সমস্যা হচ্ছে।";
+                console.error('Error:', error);
+            });
     </script>
 
 </body>
