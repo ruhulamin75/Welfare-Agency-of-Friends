@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
     <style>
         :root {
@@ -27,6 +29,7 @@
             color: var(--text-dark);
         }
 
+        /* হেডার */
         header {
             background-color: #fff;
             padding: 15px 30px;
@@ -73,6 +76,7 @@
             gap: 20px;
         }
 
+        /* কার্ডের সাধারণ স্টাইল */
         .card {
             background: #fff;
             padding: 30px;
@@ -92,6 +96,7 @@
         .card-header i { font-size: 28px; color: var(--primary-green); }
         .card-header h3 { font-size: 22px; color: var(--primary-blue); }
 
+        /* প্রোফাইল তথ্য */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -111,6 +116,7 @@
         .deposit-highlight { border-left-color: #ff9800; background: #fff8e1; }
         .deposit-highlight .value { color: #ff9800; font-size: 22px; }
 
+        /* পাসওয়ার্ড পরিবর্তন ফর্ম */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
         .form-group input {
@@ -144,7 +150,9 @@
 
         .btn-update:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* ছবি আপলোডের কাস্টম ডিজাইন */
+        #liveSyncLoader { text-align: center; color: var(--primary-blue); font-size: 14px; margin-bottom: 10px; display: none; }
+
+        /* --- নতুন: প্রোফাইল ছবি এবং ক্রপার পপআপ স্টাইল --- */
         .profile-pic-container {
             text-align: center;
             margin-bottom: 25px;
@@ -156,15 +164,34 @@
             object-fit: cover;
             border: 4px solid var(--primary-green);
             padding: 3px;
-            margin-bottom: 15px;
             background: #fff;
             box-shadow: var(--shadow);
         }
-        .file-input-wrapper {
-            margin-bottom: 15px;
+        
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.8); 
+            align-items: center; justify-content: center;
         }
-
-        #liveSyncLoader { text-align: center; color: var(--primary-blue); font-size: 14px; margin-bottom: 10px; display: none; }
+        .modal-content {
+            background-color: #fff; padding: 20px; border-radius: 15px; 
+            width: 90%; max-width: 500px; text-align: center;
+        }
+        .cropper-container-box {
+            max-height: 400px; margin-bottom: 20px; overflow: hidden;
+        }
+        .modal-btn-group {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+        }
+        .btn-cancel { 
+            background: #999; color: #fff; border: none; padding: 10px 20px; 
+            border-radius: 8px; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; 
+            font-weight: 600; transition: 0.3s;
+        }
+        .btn-cancel:hover { background: #777; }
 
         @media (max-width: 600px) {
             main { padding: 15px; }
@@ -193,13 +220,9 @@
             
             <div class="profile-pic-container">
                 <img id="profImage" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Picture">
-                
-                <div class="file-input-wrapper">
-                    <input type="file" id="imageInput" accept="image/*" style="font-family: 'Hind Siliguri', sans-serif;">
-                </div>
-                
-                <button class="btn-update" id="btnUploadImage" style="width: auto; margin: 0 auto; padding: 8px 20px;">
-                    <i class="fas fa-camera"></i> ছবি আপলোড/পরিবর্তন করুন
+                <br><br>
+                <button class="btn-update" id="btnOpenModal" style="width: auto; margin: 0 auto; padding: 8px 20px;">
+                    <i class="fas fa-camera"></i> প্রোফাইল ছবি পরিবর্তন করুন
                 </button>
             </div>
 
@@ -256,8 +279,29 @@
         </div>
     </main>
 
+    <div id="cropModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: var(--primary-blue); font-size: 20px;">ছবি সিলেক্ট এবং ক্রপ করুন</h3>
+            <div class="cropper-container-box">
+                <img id="imageToCrop" style="max-width: 100%;">
+            </div>
+            <div class="modal-btn-group">
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                <button class="btn-update" onclick="document.getElementById('fileInput').click()" style="width: auto;">
+                    <i class="fas fa-folder-open"></i> ব্রাউজ করুন
+                </button>
+                <button class="btn-update" id="btnSaveCrop" style="background: var(--primary-green); display: none; width: auto;">
+                    <i class="fas fa-cloud-upload-alt"></i> সেভ ও আপলোড
+                </button>
+                <button class="btn-cancel" id="btnCloseModal">বাতিল</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <script>
-        // আপনার Web App URL এখানে বসান (Deployment এর পর পাওয়া নতুন লিংক)
+        // আপনার Web App URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiYd3FQ8X0binQAh-gcty7KhhCHJylLvApQ_rahhjM5oxgcO__OqXmLSmYlL3DnbjR/exec';
 
         let currentUser = null;
@@ -367,64 +411,105 @@
             });
         });
 
-        // নতুন: ছবি আপলোড করার লজিক
-        document.getElementById('btnUploadImage').addEventListener('click', function() {
-            let fileInput = document.getElementById('imageInput');
-            let file = fileInput.files[0];
-            
-            if(!file) {
-                alert("দয়া করে আগে একটি ছবি নির্বাচন করুন!");
-                return;
-            }
+        // ==========================================
+        // ক্রপার এবং ইমেজ আপলোড লজিক
+        // ==========================================
+        let cropper;
+        let cropModal = document.getElementById('cropModal');
+        let imageToCrop = document.getElementById('imageToCrop');
+        let fileInput = document.getElementById('fileInput');
+        let btnSaveCrop = document.getElementById('btnSaveCrop');
 
-            // ছবির সাইজ ৩ মেগাবাইটের বেশি হলে আটকে দেবে
-            if(file.size > 3 * 1024 * 1024) {
-                alert("ছবির সাইজ অনেক বড়! দয়া করে ৩ মেগাবাইটের কম সাইজের ছবি দিন।");
-                return;
-            }
+        // পপআপ ওপেন করা
+        document.getElementById('btnOpenModal').onclick = function() {
+            cropModal.style.display = 'flex';
+        };
 
-            let btnUpload = document.getElementById('btnUploadImage');
-            btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে (কিছুক্ষণ অপেক্ষা করুন)...';
+        // পপআপ বন্ধ করা
+        document.getElementById('btnCloseModal').onclick = function() {
+            cropModal.style.display = 'none';
+            if(cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            imageToCrop.src = "";
+            fileInput.value = "";
+            btnSaveCrop.style.display = 'none';
+        };
+
+        // ফাইল সিলেক্ট করার পর ক্রপারে দেখানো
+        fileInput.onchange = function(e) {
+            let files = e.target.files;
+            if (files && files.length > 0) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    imageToCrop.src = event.target.result;
+                    if(cropper) cropper.destroy(); 
+                    
+                    // ক্রপার সেটআপ (১:১ স্কয়ার রেশিও)
+                    cropper = new Cropper(imageToCrop, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                    });
+                    btnSaveCrop.style.display = 'block';
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        };
+
+        // ক্রপ করা ছবি সেভ এবং অটোমেটিক রিসাইজ করে আপলোড করা
+        document.getElementById('btnSaveCrop').onclick = function() {
+            if (!cropper) return;
+
+            let btnUpload = document.getElementById('btnSaveCrop');
+            btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
             btnUpload.disabled = true;
 
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let base64Data = e.target.result.split(",")[1]; 
-                
-                let params = new URLSearchParams();
-                params.append('action', 'uploadProfilePic');
-                params.append('rowIndex', currentUser.rowIndex); 
-                params.append('fileName', currentUser.id + "_profile_pic"); // ইউজারের আইডির সাথে মিলিয়ে নাম
-                params.append('mimeType', file.type);
-                params.append('base64', base64Data);
+            // ক্রপ করা ছবিকে ৫০০x৫০০ পিক্সেল সাইজে কনভার্ট করা (সাইজ কমানো)
+            let canvas = cropper.getCroppedCanvas({
+                width: 500,
+                height: 500
+            });
 
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: params
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(data.result === 'success') {
-                        alert("আপনার প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!");
-                        document.getElementById('profImage').src = data.url; 
-                        
-                        currentUser.profilePic = data.url;
-                        localStorage.setItem('loggedInMember', JSON.stringify(currentUser));
-                    } else {
-                        alert("আপলোড ব্যর্থ হয়েছে: " + data.error);
-                    }
-                })
-                .catch(err => {
-                    alert("আপলোড করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করে আবার চেষ্টা করুন।");
-                })
-                .finally(() => {
-                    btnUpload.innerHTML = '<i class="fas fa-camera"></i> ছবি আপলোড/পরিবর্তন করুন';
-                    btnUpload.disabled = false;
-                    fileInput.value = ""; // আপলোড শেষে ইনপুট ফিল্ড ক্লিয়ার করে দেওয়া
-                });
-            };
-            reader.readAsDataURL(file);
-        });
+            // ছবিটিকে JPEG ফরম্যাটে রূপান্তর এবং কোয়ালিটি ৮০% এ নামিয়ে আনা
+            let dataUrl = canvas.toDataURL('image/jpeg', 0.8); 
+            let base64Data = dataUrl.split(",")[1];
+
+            let params = new URLSearchParams();
+            params.append('action', 'uploadProfilePic');
+            params.append('rowIndex', currentUser.rowIndex);
+            params.append('fileName', currentUser.id + "_profile_pic.jpg");
+            params.append('mimeType', 'image/jpeg');
+            params.append('base64', base64Data);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    alert("প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!");
+                    document.getElementById('profImage').src = data.url;
+                    
+                    // লোকাল স্টোরেজ আপডেট করা
+                    currentUser.profilePic = data.url;
+                    localStorage.setItem('loggedInMember', JSON.stringify(currentUser));
+                    
+                    document.getElementById('btnCloseModal').click(); // কাজ শেষে পপআপ বন্ধ
+                } else {
+                    alert("আপলোড ব্যর্থ হয়েছে: " + data.error);
+                }
+            })
+            .catch(err => {
+                alert("আপলোড করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করে আবার চেষ্টা করুন।");
+            })
+            .finally(() => {
+                btnUpload.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> সেভ ও আপলোড';
+                btnUpload.disabled = false;
+            });
+        };
     </script>
 </body>
 </html>
