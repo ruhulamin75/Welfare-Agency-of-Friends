@@ -162,7 +162,8 @@
             <div class="member-details" id="memberDetails">
                 <input type="hidden" id="selectedRowIndex">
                 <input type="hidden" id="selectedId">
-                <input type="hidden" id="previousTotal"> <p><strong>নাম:</strong> <span id="lblName"></span></p>
+                <input type="hidden" id="previousTotal"> 
+                <p><strong>নাম:</strong> <span id="lblName"></span></p>
                 <p><strong>মোবাইল:</strong> <span id="lblPhone"></span></p>
                 <p><strong>বর্তমান জমা:</strong> <span id="lblTotal" class="current-deposit"></span></p>
             </div>
@@ -259,8 +260,7 @@
 
             document.getElementById('selectedRowIndex').value = m.rowIndex;
             document.getElementById('selectedId').value = m.id;
-            
-            // রিসিটে সর্বমোট জমা হিসাব করার জন্য পূর্বের জমা সেভ রাখা হচ্ছে
+
             document.getElementById('previousTotal').value = m.totalDeposit || 0; 
 
             document.getElementById('lblName').innerText = m.name;
@@ -291,11 +291,15 @@
             const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
             const paymentDate = today.toLocaleDateString('bn-BD', dateOptions);
 
+            // ট্রানজেকশন আইডি জেনারেট করে ডাটাবেসে পাঠানো হচ্ছে
+            let uniqueId = "WAF-" + Date.now() + "-" + Math.floor(Math.random() * 100);
+
             let params = new URLSearchParams();
             params.append('action', 'addPayment');
             params.append('rowIndex', rowIndex);
             params.append('amount', amount);
             params.append('date', paymentDate);
+            params.append('trxId', uniqueId); // নতুন ফিল্ড
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -304,7 +308,7 @@
             .then(res => res.json())
             .then(data => {
                 if(data.result === 'success') {
-                    showReceipt(amount, paymentDate);
+                    showReceipt(amount, paymentDate, uniqueId); // uniqueId পাস করা হচ্ছে
                 }
             })
             .catch(err => {
@@ -314,11 +318,9 @@
             });
         }
 
-        function showReceipt(amount, date) {
+        function showReceipt(amount, date, uniqueId) {
             document.getElementById('paymentFormCard').style.display = 'none';
             document.getElementById('receiptCard').style.display = 'block';
-
-            let uniqueId = "WAF-" + Date.now() + "-" + Math.floor(Math.random() * 100);
 
             document.getElementById('recDate').innerText = date;
             document.getElementById('recTrx').innerText = uniqueId; 
@@ -335,7 +337,6 @@
                 amountDisplay.style.color = "var(--primary-green)";
             }
 
-            // নতুন আপডেট: পূর্বের জমার সাথে আজকের জমা যোগ করে সর্বমোট জমার হিসাব
             let prevTotal = parseFloat(document.getElementById('previousTotal').value) || 0;
             let currentAmount = parseFloat(amount) || 0;
             let newTotalDeposit = prevTotal + currentAmount;
