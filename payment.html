@@ -62,6 +62,11 @@
 
         .amount-input-group { display: none; margin-bottom: 20px; }
         .amount-input-group label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--text-dark); }
+        
+        /* নতুন যুক্ত করা ডেট ইনপুটের স্টাইল */
+        .date-input { width: 100%; padding: 15px; font-size: 16px; font-family: 'Hind Siliguri', sans-serif; border: 1px solid #ddd; border-radius: 10px; outline: none; color: var(--text-dark); margin-bottom: 15px; }
+        .date-input:focus { border-color: var(--primary-green); }
+
         .amount-wrapper { display: flex; align-items: center; }
         .amount-wrapper span { background: #eee; padding: 15px 20px; border-radius: 10px 0 0 10px; font-weight: bold; font-size: 18px; border: 1px solid #ddd; border-right: none; }
         .amount-wrapper input { flex: 1; padding: 15px; font-size: 20px; font-weight: bold; border: 1px solid #ddd; border-radius: 0 10px 10px 0; outline: none; color: var(--primary-green); }
@@ -169,6 +174,9 @@
             </div>
 
             <div class="amount-input-group" id="amountGroup">
+                <label>তারিখ নির্বাচন করুন:</label>
+                <input type="date" id="payDate" class="date-input">
+
                 <label>জমার পরিমাণ লিখুন:</label>
                 <div class="amount-wrapper">
                     <span>৳</span>
@@ -258,6 +266,10 @@
             document.getElementById('amountGroup').style.display = 'block';
             document.getElementById('btnPay').style.display = 'block';
 
+            // আজকের তারিখ ডিফল্ট হিসেবে ইনপুট ফিল্ডে সেট করা
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('payDate').value = today;
+
             document.getElementById('selectedRowIndex').value = m.rowIndex;
             document.getElementById('selectedId').value = m.id;
 
@@ -276,9 +288,14 @@
 
         function processPayment() {
             let amount = document.getElementById('payAmount').value;
+            let dateVal = document.getElementById('payDate').value; // ইউজার কর্তৃক নির্বাচিত তারিখ
 
             if(!amount || amount == 0) {
                 alert("অনুগ্রহ করে সঠিক টাকার পরিমাণ দিন (০ ব্যতীত)!");
+                return;
+            }
+            if(!dateVal) {
+                alert("অনুগ্রহ করে তারিখ নির্বাচন করুন!");
                 return;
             }
 
@@ -287,9 +304,11 @@
             btnPay.disabled = true;
 
             let rowIndex = document.getElementById('selectedRowIndex').value;
-            const today = new Date();
+            
+            // সিলেক্ট করা তারিখটি আপনার আগের ফরম্যাট (bn-BD) অনুযায়ী কনভার্ট করা হচ্ছে
+            let selectedDateObj = new Date(dateVal);
             const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-            const paymentDate = today.toLocaleDateString('bn-BD', dateOptions);
+            const paymentDate = selectedDateObj.toLocaleDateString('bn-BD', dateOptions);
 
             // ট্রানজেকশন আইডি জেনারেট করে ডাটাবেসে পাঠানো হচ্ছে
             let uniqueId = "WAF-" + Date.now() + "-" + Math.floor(Math.random() * 100);
@@ -298,8 +317,8 @@
             params.append('action', 'addPayment');
             params.append('rowIndex', rowIndex);
             params.append('amount', amount);
-            params.append('date', paymentDate);
-            params.append('trxId', uniqueId); // নতুন ফিল্ড
+            params.append('date', paymentDate); // নির্বাচিত তারিখ পাঠানো হচ্ছে
+            params.append('trxId', uniqueId); 
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -308,7 +327,7 @@
             .then(res => res.json())
             .then(data => {
                 if(data.result === 'success') {
-                    showReceipt(amount, paymentDate, uniqueId); // uniqueId পাস করা হচ্ছে
+                    showReceipt(amount, paymentDate, uniqueId); 
                 }
             })
             .catch(err => {
