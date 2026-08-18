@@ -9,13 +9,14 @@
     
     <style>
         :root {
-            --primary-color: #1e3a8a;
-            --accent-color: #3b82f6;
-            --success-color: #10b981;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* সম্পূর্ণ সবুজ থিম */
+            --primary-color: #15803d; /* গাঢ় সবুজ (লোগোর সাথে মানানসই) */
+            --accent-color: #22c55e;  /* উজ্জ্বল সবুজ */
+            --success-color: #16a34a; /* বাটনের সবুজ */
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); /* হালকা সবুজ ব্যাকগ্রাউন্ড */
             --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: #e5e7eb;
+            --text-muted: #4b5563;
+            --border-color: #d1d5db;
         }
 
         body {
@@ -33,7 +34,7 @@
             background: #ffffff;
             padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 40px rgba(21, 128, 61, 0.08); /* শ্যাডোতেও সবুজের আভা */
             transition: all 0.3s ease;
         }
 
@@ -76,7 +77,7 @@
             font-size: 15px;
         }
 
-        input[type="text"], input[type="number"], input[type="date"] {
+        input[type="text"], input[type="number"], input[type="date"], select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid var(--border-color);
@@ -88,17 +89,17 @@
             background-color: #f9fafb;
         }
 
-        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus {
             border-color: var(--accent-color);
             outline: none;
             background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); /* ফোকাস করলে হালকা সবুজ শ্যাডো */
         }
 
         input[readonly] {
-            background-color: #e0f2fe !important;
-            border-color: #bae6fd !important;
-            color: #0369a1;
+            background-color: #dcfce7 !important; /* রিডওনলি ফিল্ড হালকা সবুজ */
+            border-color: #bbf7d0 !important;
+            color: var(--primary-color);
             font-weight: 600;
             cursor: not-allowed;
         }
@@ -107,7 +108,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            background: #f9fafb;
+            background: #f8fafc;
             padding: 15px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -143,13 +144,13 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Hind Siliguri', sans-serif;
-            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+            box-shadow: 0 4px 6px rgba(21, 128, 61, 0.2);
         }
 
         button.submit-btn:hover {
-            background: #1e40af;
+            background: #166534; /* হোভার করলে আরও গাঢ় সবুজ */
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 6px 12px rgba(21, 128, 61, 0.3);
         }
 
         .hidden { display: none !important; }
@@ -165,7 +166,6 @@
             overflow: hidden;
         }
 
-        /* জলছাপের CSS */
         #receipt-section::before {
             content: "";
             position: absolute;
@@ -174,11 +174,11 @@
             transform: translate(-50%, -50%);
             width: 350px;
             height: 350px;
-            background-image: url('logodif.png'); /* লোগো ফাইলটি এখান থেকে পাবে */
+            background-image: url('logodif.png'); 
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            opacity: 0.08; /* জলছাপের স্বচ্ছতা */
+            opacity: 0.08; 
             z-index: -1;
         }
 
@@ -188,7 +188,7 @@
             align-items: center;
             border-bottom: 2px solid var(--primary-color);
             padding-bottom: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .receipt-header-left img {
@@ -213,14 +213,31 @@
             line-height: 1.5;
         }
 
+        /* রিসিট টাইটেল ব্যাজ */
+        .receipt-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .receipt-title span {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 25px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(21, 128, 61, 0.15);
+            display: inline-block;
+        }
+
         .receipt-meta {
             display: flex;
             justify-content: space-between;
-            background: #f8fafc;
+            background: #f0fdf4; /* মেটা ব্যাকগ্রাউন্ড হালকা সবুজ */
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #bbf7d0;
         }
 
         .meta-item { font-size: 15px; }
@@ -246,7 +263,7 @@
             width: 35%;
             color: var(--text-muted);
             font-weight: 600;
-            background: #fafafa;
+            background: #f9fafb;
         }
 
         .receipt-table td {
@@ -258,12 +275,12 @@
             font-size: 18px;
             font-weight: 700;
             color: var(--primary-color);
-            background: #eff6ff;
+            background: #dcfce7; /* মোট টাকার রো হালকা সবুজ */
         }
 
         .amount-words-box {
             background: #f0fdf4;
-            border-left: 4px solid var(--success-color);
+            border-left: 4px solid var(--primary-color);
             padding: 15px 20px;
             border-radius: 0 8px 8px 0;
             margin-bottom: 60px;
@@ -271,11 +288,11 @@
             color: #166534;
         }
 
-        .amount-words-box strong { color: var(--success-color); }
+        .amount-words-box strong { color: var(--primary-color); }
 
         .signatures {
             display: flex;
-            justify-content: flex-end; /* শুধু একটি স্বাক্ষর ডানপাশে দেখানোর জন্য */
+            justify-content: flex-end; 
             margin-top: 50px;
         }
 
@@ -319,7 +336,7 @@
         }
 
         .btn-download { background: var(--success-color); color: white; }
-        .btn-download:hover { background: #059669; transform: translateY(-2px); }
+        .btn-download:hover { background: #15803d; transform: translateY(-2px); }
         .btn-edit { background: #ef4444; color: white; }
         .btn-edit:hover { background: #dc2626; transform: translateY(-2px); }
 
@@ -341,26 +358,30 @@
     <form id="receiptForm">
         <div class="form-grid">
             <div class="form-group">
-                <label class="field-label">তারিখ</label>
+                <label class="field-label">তারিখ <span style="color:red;">*</span></label>
                 <input type="date" id="date" required>
             </div>
+            
             <div class="form-group">
-                <label class="field-label">সদস্যের আইডি</label>
-                <input type="text" id="memberId" required placeholder="যেমন: M-1042">
+                <label class="field-label">সদস্যের আইডি <span style="color:red;">*</span></label>
+                <select id="memberId" required>
+                    <option value="" disabled selected>সদস্য আইডি নির্বাচন করুন</option>
+                    <!-- ১ থেকে ৪০ পর্যন্ত অপশন জাভাস্ক্রিপ্ট দ্বারা যুক্ত হবে -->
+                </select>
             </div>
             
             <div class="form-group full-width">
-                <label class="field-label">নাম</label>
+                <label class="field-label">নাম <span style="color:red;">*</span></label>
                 <input type="text" id="name" required placeholder="সদস্যের সম্পূর্ণ নাম">
             </div>
             
             <div class="form-group full-width">
-                <label class="field-label">ঠিকানা</label>
-                <input type="text" id="address" required placeholder="বর্তমান ঠিকানা">
+                <label class="field-label">ঠিকানা (ঐচ্ছিক)</label>
+                <input type="text" id="address" placeholder="বর্তমান ঠিকানা">
             </div>
             
             <div class="form-group full-width">
-                <label class="field-label">জমার খাত (একাধিক নির্বাচন করা যাবে)</label>
+                <label class="field-label">জমার খাত <span style="color:red;">*</span> (একাধিক নির্বাচন করা যাবে)</label>
                 <div class="checkbox-group">
                     <label class="checkbox-label"><input type="checkbox" name="category" value="ভর্তি ফি"> ভর্তি ফি</label>
                     <label class="checkbox-label"><input type="checkbox" name="category" value="এককালীন"> এককালীন</label>
@@ -370,14 +391,19 @@
                     <label class="checkbox-label"><input type="checkbox" name="category" value="অন্যান্য"> অন্যান্য</label>
                 </div>
             </div>
+
+            <div class="form-group full-width">
+                <label class="field-label">বিবরণ (ঐচ্ছিক)</label>
+                <input type="text" id="description" placeholder="যেকোনো অতিরিক্ত বিবরণ">
+            </div>
             
             <div class="form-group">
-                <label class="field-label">টাকার পরিমাণ (অঙ্কে)</label>
+                <label class="field-label">টাকার পরিমাণ (অঙ্কে) <span style="color:red;">*</span></label>
                 <input type="number" id="amount" required placeholder="যেমন: 5000">
             </div>
             
             <div class="form-group">
-                <label class="field-label">টাকার পরিমাণ (কথায়)</label>
+                <label class="field-label">টাকার পরিমাণ (কথায়) <span style="color:red;">*</span></label>
                 <input type="text" id="amountWords" required readonly placeholder="স্বয়ংক্রিয়ভাবে কথায় আসবে">
             </div>
         </div>
@@ -399,13 +425,16 @@
     <div id="receipt-section">
         <div class="receipt-header">
             <div class="receipt-header-left">
-                <!-- লোকাল ফোল্ডার থেকে লোগো লোড হবে -->
                 <img src="logodif.png" alt="Logo" id="company-logo">
             </div>
             <div class="receipt-header-right">
                 <h1>দারুল ইত্তিহাদ ফাউন্ডেশন</h1>
                 <p>নয়নপুর, কসবা, ব্রাহ্মণবাড়িয়া<br>ফোন: +৮৮০ ১৯২৫-৩০৬০০৪<br>ইমেইল: darulittihadfoundation@gmail.com</p>
             </div>
+        </div>
+
+        <div class="receipt-title">
+            <span>টাকা জমার রিসিট</span>
         </div>
 
         <div class="receipt-meta">
@@ -430,6 +459,10 @@
                 <th>জমার খাত</th>
                 <td id="r-category"></td>
             </tr>
+            <tr>
+                <th>বিবরণ</th>
+                <td id="r-description"></td>
+            </tr>
             <tr class="amount-row">
                 <th>মোট টাকার পরিমাণ</th>
                 <td id="r-amount"></td>
@@ -442,7 +475,6 @@
 
         <div class="signatures">
             <div class="sig-box">
-                <!-- লোকাল ফোল্ডার থেকে স্বাক্ষর লোড হবে -->
                 <img src="sign.png" alt="Approver" id="sign-approver">
                 <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
             </div>
@@ -451,6 +483,15 @@
 </div>
 
 <script>
+    // ১ থেকে ৪০ পর্যন্ত সদস্য আইডি ড্রপডাউনে যুক্ত করা
+    const memberSelect = document.getElementById('memberId');
+    for (let i = 1; i <= 40; i++) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        memberSelect.appendChild(option);
+    }
+
     const banglaWords = [
         "", "এক", "দুই", "তিন", "চার", "পাঁচ", "ছয়", "সাত", "আট", "নয়", "দশ",
         "এগারো", "বারো", "তেরো", "চৌদ্দ", "পনেরো", "ষোল", "সতেরো", "আঠারো", "উনিশ", "বিশ",
@@ -460,7 +501,7 @@
         "একান্ন", "বায়ান্ন", "তিপ্পান্ন", "চুয়ান্ন", "পঞ্চান্ন", "ছাপ্পান্ন", "সাতান্ন", "আটান্ন", "ঊনষাট", "ষাট",
         "একষট্টি", "বাষট্টি", "তেষট্টি", "চৌষট্টি", "পঁয়ষট্টি", "ছেষট্টি", "সাতষট্টি", "আটষট্টি", "ঊনসত্তর", "সত্তর",
         "একাত্তর", "বাহাত্তর", "তিয়াত্তর", "চুয়াত্তর", "পঁচাত্তর", "ছিয়াত্তর", "সাতাত্তর", "আটাত্তর", "ঊনআশি", "আশি",
-        "একাশি", "বিরাশি", "তিরাশি", "চuraশি", "পঁচাশি", "ছিয়াশি", "সাতাশি", "অষ্টাশি", "ঊননব্বই", "নব্বই",
+        "একাশি", "বিরাশি", "তিরাশি", "চুরাশি", "পঁচাশি", "ছিয়াশি", "সাতাশি", "অষ্টাশি", "ঊননব্বই", "নব্বই",
         "একানব্বই", "বিরানব্বই", "তিরানব্বই", "চুরানব্বই", "পঁচানব্বই", "ছিয়ানব্বই", "সাতানব্বই", "আটানব্বই", "নিরানব্বই"
     ];
 
@@ -508,7 +549,6 @@
         });
         const categoryText = selectedCategories.join(', ');
 
-        // শতভাগ ইউনিক রিসিট নম্বর তৈরি (ফরম্যাট: REC-YYYYMMDD-HHMMSS)
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -527,9 +567,16 @@
 
         document.getElementById('r-memberId').innerText = document.getElementById('memberId').value;
         document.getElementById('r-name').innerText = document.getElementById('name').value;
-        document.getElementById('r-address').innerText = document.getElementById('address').value;
+        
+        // ঠিকানার ডেটা বসানো (ফাঁকা থাকলে 'প্রযোজ্য নয়' দেখাবে)
+        let addressValue = document.getElementById('address').value;
+        document.getElementById('r-address').innerText = addressValue ? addressValue : "প্রযোজ্য নয়";
         
         document.getElementById('r-category').innerText = categoryText;
+        
+        // বিবরণের ডেটা বসানো (ফাঁকা থাকলে 'প্রযোজ্য নয়' দেখাবে)
+        let descValue = document.getElementById('description').value;
+        document.getElementById('r-description').innerText = descValue ? descValue : "প্রযোজ্য নয়";
         
         const amountNum = Number(document.getElementById('amount').value);
         document.getElementById('r-amount').innerText = amountNum.toLocaleString('en-IN') + " টাকা";
