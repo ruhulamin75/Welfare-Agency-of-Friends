@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>প্রফেশনাল রিসিট সিস্টেম</title>
-    <!-- বাংলা গুগল ফন্ট -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- PDF জেনারেট করার জন্য html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         :root {
-            --primary-color: #1e3a8a; /* গাঢ় নীল */
-            --accent-color: #3b82f6; /* উজ্জ্বল নীল */
-            --success-color: #10b981; /* সুন্দর সবুজ */
+            --primary-color: #1e3a8a;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
             --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             --text-main: #1f2937;
             --text-muted: #6b7280;
@@ -70,7 +68,7 @@
             grid-column: span 2;
         }
 
-        label {
+        label.field-label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
@@ -78,7 +76,7 @@
             font-size: 15px;
         }
 
-        input {
+        input[type="text"], input[type="number"], input[type="date"] {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid var(--border-color);
@@ -90,7 +88,7 @@
             background-color: #f9fafb;
         }
 
-        input:focus {
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
             border-color: var(--accent-color);
             outline: none;
             background-color: #fff;
@@ -98,11 +96,39 @@
         }
 
         input[readonly] {
-            background-color: #e0f2fe;
-            border-color: #bae6fd;
+            background-color: #e0f2fe !important;
+            border-color: #bae6fd !important;
             color: #0369a1;
             font-weight: 600;
             cursor: not-allowed;
+        }
+
+        /* চেকবক্স স্টাইল */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: #f9fafb;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--text-main);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            transform: scale(1.2);
+            cursor: pointer;
+            accent-color: var(--accent-color);
         }
 
         button.submit-btn {
@@ -129,7 +155,7 @@
 
         .hidden { display: none !important; }
 
-        /* --- প্রফেশনাল রিসিট ডিজাইন --- */
+        /* রিসিট ডিজাইন */
         #receipt-section {
             background: #fff;
             padding: 50px;
@@ -138,7 +164,6 @@
             position: relative;
         }
 
-        /* রিসিটের হেডার */
         .receipt-header {
             display: flex;
             justify-content: space-between;
@@ -170,7 +195,6 @@
             line-height: 1.5;
         }
 
-        /* রিসিটের মেটা ইনফো */
         .receipt-meta {
             display: flex;
             justify-content: space-between;
@@ -181,17 +205,13 @@
             border: 1px solid #e2e8f0;
         }
 
-        .meta-item {
-            font-size: 15px;
-        }
-
+        .meta-item { font-size: 15px; }
         .meta-item span {
             font-weight: 700;
             color: var(--primary-color);
             margin-left: 5px;
         }
 
-        /* ডেটা টেবিল */
         .receipt-table {
             width: 100%;
             border-collapse: collapse;
@@ -223,7 +243,6 @@
             background: #eff6ff;
         }
 
-        /* টাকা কথায় হাইলাইট বক্স */
         .amount-words-box {
             background: #f0fdf4;
             border-left: 4px solid var(--success-color);
@@ -234,11 +253,8 @@
             color: #166534;
         }
 
-        .amount-words-box strong {
-            color: var(--success-color);
-        }
+        .amount-words-box strong { color: var(--success-color); }
 
-        /* স্বাক্ষর এরিয়া */
         .signatures {
             display: flex;
             justify-content: space-between;
@@ -263,7 +279,6 @@
             font-size: 14px;
         }
 
-        /* অ্যাকশন বাটনস */
         .action-bar {
             display: flex;
             gap: 15px;
@@ -285,32 +300,15 @@
             gap: 8px;
         }
 
-        .btn-download {
-            background: var(--success-color);
-            color: white;
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
-        }
+        .btn-download { background: var(--success-color); color: white; }
+        .btn-download:hover { background: #059669; transform: translateY(-2px); }
+        .btn-edit { background: #ef4444; color: white; }
+        .btn-edit:hover { background: #dc2626; transform: translateY(-2px); }
 
-        .btn-download:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
-
-        .btn-edit {
-            background: #ef4444;
-            color: white;
-            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-edit:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-        }
-
-        /* মোবাইল রেস্পন্সিভ */
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .form-group.full-width { grid-column: 1; }
+            .checkbox-group { grid-template-columns: repeat(2, 1fr); }
             .receipt-header { flex-direction: column; text-align: center; }
             .receipt-header-right { text-align: center; margin-top: 15px; }
             .receipt-meta { flex-direction: column; gap: 10px; text-align: center; }
@@ -320,43 +318,50 @@
 </head>
 <body>
 
-<!-- ফর্ম কন্টেইনার -->
 <div class="container" id="form-container">
     <h2 class="form-title">পেমেন্ট রিসিট এন্ট্রি</h2>
     <form id="receiptForm">
         <div class="form-grid">
             <div class="form-group">
-                <label>তারিখ</label>
+                <label class="field-label">তারিখ</label>
                 <input type="date" id="date" required>
             </div>
             <div class="form-group">
-                <label>সদস্যের আইডি</label>
+                <label class="field-label">সদস্যের আইডি</label>
                 <input type="text" id="memberId" required placeholder="যেমন: M-1042">
             </div>
             
             <div class="form-group full-width">
-                <label>নাম</label>
+                <label class="field-label">নাম</label>
                 <input type="text" id="name" required placeholder="সদস্যের সম্পূর্ণ নাম">
             </div>
             
             <div class="form-group full-width">
-                <label>ঠিকানা</label>
+                <label class="field-label">ঠিকানা</label>
                 <input type="text" id="address" required placeholder="বর্তমান ঠিকানা">
             </div>
             
-            <div class="form-group">
-                <label>জমার খাত (বিবরণ)</label>
-                <input type="text" id="category" required placeholder="যেমন: মাসিক চাঁদা">
+            <!-- চেকবক্স খাত সেকশন -->
+            <div class="form-group full-width">
+                <label class="field-label">জমার খাত (একাধিক নির্বাচন করা যাবে)</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="ভর্তি ফি"> ভর্তি ফি</label>
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="এককালীন"> এককালীন</label>
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="মাসিক জমা"> মাসিক জমা</label>
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="ডোনেশন"> ডোনেশন</label>
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="জরিমানা"> জরিমানা</label>
+                    <label class="checkbox-label"><input type="checkbox" name="category" value="অন্যান্য"> অন্যান্য</label>
+                </div>
             </div>
             
             <div class="form-group">
-                <label>টাকার পরিমাণ (অঙ্কে)</label>
+                <label class="field-label">টাকার পরিমাণ (অঙ্কে)</label>
                 <input type="number" id="amount" required placeholder="যেমন: 5000">
             </div>
             
-            <div class="form-group full-width">
-                <label>টাকার পরিমাণ (কথায়)</label>
-                <input type="text" id="amountWords" required readonly placeholder="অঙ্কে লিখলে এখানে স্বয়ংক্রিয়ভাবে কথায় আসবে">
+            <div class="form-group">
+                <label class="field-label">টাকার পরিমাণ (কথায়)</label>
+                <input type="text" id="amountWords" required readonly placeholder="স্বয়ংক্রিয়ভাবে কথায় আসবে">
             </div>
         </div>
         
@@ -364,7 +369,6 @@
     </form>
 </div>
 
-<!-- রিসিট কন্টেইনার -->
 <div class="container hidden" id="receipt-container">
     <div class="action-bar">
         <button class="btn btn-download" onclick="downloadPDF()">
@@ -376,11 +380,10 @@
     </div>
     
     <div id="receipt-section">
-        <!-- রিসিট হেডার -->
         <div class="receipt-header">
             <div class="receipt-header-left">
-                <!-- লোগোর ড্রাইভ লিংক এখানে বসান -->
-                <img src="https://via.placeholder.com/150x60?text=YOUR+LOGO" alt="Logo">
+                <!-- গুগল ড্রাইভ থেকে যুক্ত করা লোগো -->
+                <img src="https://drive.google.com/uc?id=1RaFbbO9g139p_CAVp3S-w9FD13gnA4T6" crossorigin="anonymous" alt="Logo" id="company-logo">
             </div>
             <div class="receipt-header-right">
                 <h1>আপনার প্রতিষ্ঠানের নাম</h1>
@@ -388,13 +391,11 @@
             </div>
         </div>
 
-        <!-- মেটা ইনফো (রিসিট নং ও তারিখ) -->
         <div class="receipt-meta">
             <div class="meta-item">রিসিট নং: <span id="r-receiptNo"></span></div>
             <div class="meta-item">তারিখ: <span id="r-date"></span></div>
         </div>
 
-        <!-- মূল ডেটা টেবিল -->
         <table class="receipt-table">
             <tr>
                 <th>সদস্যের আইডি</th>
@@ -409,7 +410,7 @@
                 <td id="r-address"></td>
             </tr>
             <tr>
-                <th>জমার খাত / বিবরণ</th>
+                <th>জমার খাত</th>
                 <td id="r-category"></td>
             </tr>
             <tr class="amount-row">
@@ -418,21 +419,19 @@
             </tr>
         </table>
         
-        <!-- টাকা কথায় হাইলাইট -->
         <div class="amount-words-box">
             <strong>কথায়: </strong> <span id="r-amountWords"></span>
         </div>
 
-        <!-- স্বাক্ষর -->
         <div class="signatures">
             <div class="sig-box">
-                <!-- আদায়কারীর স্বাক্ষর -->
-                <img src="https://via.placeholder.com/120x40?text=Sign1" alt="Collector">
+                <!-- গুগল ড্রাইভ থেকে যুক্ত করা আদায়কারীর স্বাক্ষর -->
+                <img src="https://drive.google.com/uc?id=1tnFYZ4UY1QWf5hJo_4ec-Na1zs3Yhtos" crossorigin="anonymous" alt="Collector" id="sign-collector">
                 <div class="sig-line">আদায়কারীর স্বাক্ষর</div>
             </div>
             <div class="sig-box">
-                <!-- অনুমোদনকারীর স্বাক্ষর -->
-                <img src="https://via.placeholder.com/120x40?text=Sign2" alt="Approver">
+                <!-- গুগল ড্রাইভ থেকে যুক্ত করা অনুমোদনকারীর স্বাক্ষর -->
+                <img src="https://drive.google.com/uc?id=1oa3jVQXc5qnI2y5hcxjnyUdUOdWCkKde" crossorigin="anonymous" alt="Approver" id="sign-approver">
                 <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
             </div>
         </div>
@@ -440,7 +439,6 @@
 </div>
 
 <script>
-    // ১-৯৯ পর্যন্ত বাংলা সংখ্যার অ্যারে
     const banglaWords = [
         "", "এক", "দুই", "তিন", "চার", "পাঁচ", "ছয়", "সাত", "আট", "নয়", "দশ",
         "এগারো", "বারো", "তেরো", "চৌদ্দ", "পনেরো", "ষোল", "সতেরো", "আঠারো", "উনিশ", "বিশ",
@@ -454,7 +452,6 @@
         "একানব্বই", "বিরানব্বই", "তিরানব্বই", "চুরানব্বই", "পঁচানব্বই", "ছিয়ানব্বই", "সাতানব্বই", "আটানব্বই", "নিরানব্বই"
     ];
 
-    // সংখ্যাকে কথায় রূপান্তরের ফাংশন
     function convertNumberToBanglaWords(num) {
         if (num === 0) return "শূন্য টাকা মাত্র";
         if (num > 999999999) return "অঙ্কটি অনেক বড়";
@@ -475,7 +472,6 @@
         return str.trim() + " টাকা মাত্র";
     }
 
-    // টাইপ করার সাথে সাথে কথায় রূপান্তর
     document.getElementById('amount').addEventListener('input', function() {
         const num = parseInt(this.value);
         const wordsField = document.getElementById('amountWords');
@@ -483,23 +479,31 @@
         else { wordsField.value = convertNumberToBanglaWords(num); }
     });
 
-    // ডিফল্ট আজকের তারিখ
     document.getElementById('date').valueAsDate = new Date();
 
-    // ফর্ম সাবমিট
     document.getElementById('receiptForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // রিসিট নং জেনারেট (REC-2024-XXXX)
+        // চেকবক্স ভ্যালিডেশন এবং ডেটা সংগ্রহ
+        const checkboxes = document.querySelectorAll('input[name="category"]:checked');
+        if(checkboxes.length === 0) {
+            alert("অনুগ্রহ করে অন্তত একটি জমার খাত নির্বাচন করুন!");
+            return;
+        }
+        
+        let selectedCategories = [];
+        checkboxes.forEach((cb) => {
+            selectedCategories.push(cb.value);
+        });
+        const categoryText = selectedCategories.join(', ');
+
         const dateObj = new Date();
         const year = dateObj.getFullYear();
         const randomStr = Math.floor(1000 + Math.random() * 9000);
         const receiptNo = `REC-${year}-${randomStr}`;
 
-        // ডেটা বসানো
         document.getElementById('r-receiptNo').innerText = receiptNo;
         
-        // তারিখ ফরমেট করা (DD-MM-YYYY)
         const rawDate = document.getElementById('date').value.split('-');
         const formattedDate = `${rawDate[2]}-${rawDate[1]}-${rawDate[0]}`;
         document.getElementById('r-date').innerText = formattedDate;
@@ -507,26 +511,23 @@
         document.getElementById('r-memberId').innerText = document.getElementById('memberId').value;
         document.getElementById('r-name').innerText = document.getElementById('name').value;
         document.getElementById('r-address').innerText = document.getElementById('address').value;
-        document.getElementById('r-category').innerText = document.getElementById('category').value;
         
-        // টাকার পরিমাণে কমা বসানো (যেমন 5,000)
+        // রিসিটে চেকবক্সের ডেটা বসানো
+        document.getElementById('r-category').innerText = categoryText;
+        
         const amountNum = Number(document.getElementById('amount').value);
         document.getElementById('r-amount').innerText = amountNum.toLocaleString('en-IN') + " টাকা";
-        
         document.getElementById('r-amountWords').innerText = document.getElementById('amountWords').value;
 
-        // ভিউ পরিবর্তন
         document.getElementById('form-container').classList.add('hidden');
         document.getElementById('receipt-container').classList.remove('hidden');
     });
 
-    // এডিট ফর্ম
     function editForm() {
         document.getElementById('receipt-container').classList.add('hidden');
         document.getElementById('form-container').classList.remove('hidden');
     }
 
-    // পিডিএফ ডাউনলোড
     function downloadPDF() {
         const element = document.getElementById('receipt-section');
         const receiptNo = document.getElementById('r-receiptNo').innerText;
@@ -539,7 +540,6 @@
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
-        // বাটন লুকানো লাগবে না কারণ আমরা শুধুমাত্র receipt-section কে প্রিন্ট করছি
         html2pdf().set(opt).from(element).save();
     }
 </script>
