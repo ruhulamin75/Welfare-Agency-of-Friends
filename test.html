@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রফেশনাল রিসিট সিস্টেম</title>
+    <!-- বাংলা গুগল ফন্ট -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PDF জেনারেট করার জন্য html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1e3a8a; /* গাঢ় নীল */
+            --accent-color: #3b82f6; /* উজ্জ্বল নীল */
+            --success-color: #10b981; /* সুন্দর সবুজ */
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        h2.form-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h2.form-title::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: var(--accent-color);
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Hind Siliguri', sans-serif;
+            transition: all 0.3s ease;
+            background-color: #f9fafb;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        input[readonly] {
+            background-color: #e0f2fe;
+            border-color: #bae6fd;
+            color: #0369a1;
+            font-weight: 600;
+            cursor: not-allowed;
+        }
+
+        button.submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Hind Siliguri', sans-serif;
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+        }
+
+        button.submit-btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- প্রফেশনাল রিসিট ডিজাইন --- */
+        #receipt-section {
+            background: #fff;
+            padding: 50px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        /* রিসিটের হেডার */
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .receipt-header-left img {
+            max-height: 80px;
+        }
+
+        .receipt-header-right {
+            text-align: right;
+        }
+
+        .receipt-header-right h1 {
+            margin: 0 0 5px 0;
+            color: var(--primary-color);
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .receipt-header-right p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* রিসিটের মেটা ইনফো */
+        .receipt-meta {
+            display: flex;
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-item {
+            font-size: 15px;
+        }
+
+        .meta-item span {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-left: 5px;
+        }
+
+        /* ডেটা টেবিল */
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .receipt-table th, .receipt-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .receipt-table th {
+            width: 35%;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #fafafa;
+        }
+
+        .receipt-table td {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .amount-row td {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        /* টাকা কথায় হাইলাইট বক্স */
+        .amount-words-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success-color);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 60px;
+            font-size: 16px;
+            color: #166534;
+        }
+
+        .amount-words-box strong {
+            color: var(--success-color);
+        }
+
+        /* স্বাক্ষর এরিয়া */
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .sig-box {
+            text-align: center;
+            width: 200px;
+        }
+
+        .sig-box img {
+            max-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .sig-line {
+            border-top: 1.5px dashed #9ca3af;
+            padding-top: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* অ্যাকশন বাটনস */
+        .action-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Hind Siliguri', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-download {
+            background: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-edit:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* মোবাইল রেস্পন্সিভ */
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: 1; }
+            .receipt-header { flex-direction: column; text-align: center; }
+            .receipt-header-right { text-align: center; margin-top: 15px; }
+            .receipt-meta { flex-direction: column; gap: 10px; text-align: center; }
+            .signatures { flex-direction: column; gap: 40px; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ফর্ম কন্টেইনার -->
+<div class="container" id="form-container">
+    <h2 class="form-title">পেমেন্ট রিসিট এন্ট্রি</h2>
+    <form id="receiptForm">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>তারিখ</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label>সদস্যের আইডি</label>
+                <input type="text" id="memberId" required placeholder="যেমন: M-1042">
+            </div>
+            
+            <div class="form-group full-width">
+                <label>নাম</label>
+                <input type="text" id="name" required placeholder="সদস্যের সম্পূর্ণ নাম">
+            </div>
+            
+            <div class="form-group full-width">
+                <label>ঠিকানা</label>
+                <input type="text" id="address" required placeholder="বর্তমান ঠিকানা">
+            </div>
+            
+            <div class="form-group">
+                <label>জমার খাত (বিবরণ)</label>
+                <input type="text" id="category" required placeholder="যেমন: মাসিক চাঁদা">
+            </div>
+            
+            <div class="form-group">
+                <label>টাকার পরিমাণ (অঙ্কে)</label>
+                <input type="number" id="amount" required placeholder="যেমন: 5000">
+            </div>
+            
+            <div class="form-group full-width">
+                <label>টাকার পরিমাণ (কথায়)</label>
+                <input type="text" id="amountWords" required readonly placeholder="অঙ্কে লিখলে এখানে স্বয়ংক্রিয়ভাবে কথায় আসবে">
+            </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">রিসিট জেনারেট করুন</button>
+    </form>
+</div>
+
+<!-- রিসিট কন্টেইনার -->
+<div class="container hidden" id="receipt-container">
+    <div class="action-bar">
+        <button class="btn btn-download" onclick="downloadPDF()">
+            <span>📥</span> পিডিএফ ডাউনলোড
+        </button>
+        <button class="btn btn-edit" onclick="editForm()">
+            <span>✏️</span> আবার এডিট করুন
+        </button>
+    </div>
+    
+    <div id="receipt-section">
+        <!-- রিসিট হেডার -->
+        <div class="receipt-header">
+            <div class="receipt-header-left">
+                <!-- লোগোর ড্রাইভ লিংক এখানে বসান -->
+                <img src="https://via.placeholder.com/150x60?text=YOUR+LOGO" alt="Logo">
+            </div>
+            <div class="receipt-header-right">
+                <h1>আপনার প্রতিষ্ঠানের নাম</h1>
+                <p>১২৩, ডেমো স্ট্রিট, ঢাকা, বাংলাদেশ<br>ফোন: +৮৮০ ১২৩৪ ৫৬৭৮৯০<br>ইমেইল: info@yourdomain.com</p>
+            </div>
+        </div>
+
+        <!-- মেটা ইনফো (রিসিট নং ও তারিখ) -->
+        <div class="receipt-meta">
+            <div class="meta-item">রিসিট নং: <span id="r-receiptNo"></span></div>
+            <div class="meta-item">তারিখ: <span id="r-date"></span></div>
+        </div>
+
+        <!-- মূল ডেটা টেবিল -->
+        <table class="receipt-table">
+            <tr>
+                <th>সদস্যের আইডি</th>
+                <td id="r-memberId"></td>
+            </tr>
+            <tr>
+                <th>প্রদানকারীর নাম</th>
+                <td id="r-name"></td>
+            </tr>
+            <tr>
+                <th>ঠিকানা</th>
+                <td id="r-address"></td>
+            </tr>
+            <tr>
+                <th>জমার খাত / বিবরণ</th>
+                <td id="r-category"></td>
+            </tr>
+            <tr class="amount-row">
+                <th>মোট টাকার পরিমাণ</th>
+                <td id="r-amount"></td>
+            </tr>
+        </table>
+        
+        <!-- টাকা কথায় হাইলাইট -->
+        <div class="amount-words-box">
+            <strong>কথায়: </strong> <span id="r-amountWords"></span>
+        </div>
+
+        <!-- স্বাক্ষর -->
+        <div class="signatures">
+            <div class="sig-box">
+                <!-- আদায়কারীর স্বাক্ষর -->
+                <img src="https://via.placeholder.com/120x40?text=Sign1" alt="Collector">
+                <div class="sig-line">আদায়কারীর স্বাক্ষর</div>
+            </div>
+            <div class="sig-box">
+                <!-- অনুমোদনকারীর স্বাক্ষর -->
+                <img src="https://via.placeholder.com/120x40?text=Sign2" alt="Approver">
+                <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ১-৯৯ পর্যন্ত বাংলা সংখ্যার অ্যারে
+    const banglaWords = [
+        "", "এক", "দুই", "তিন", "চার", "পাঁচ", "ছয়", "সাত", "আট", "নয়", "দশ",
+        "এগারো", "বারো", "তেরো", "চৌদ্দ", "পনেরো", "ষোল", "সতেরো", "আঠারো", "উনিশ", "বিশ",
+        "একুশ", "বাইশ", "তেইশ", "চব্বিশ", "পঁচিশ", "ছাব্বিশ", "সাতাশ", "আঠাশ", "ঊনত্রিশ", "ত্রিশ",
+        "একত্রিশ", "বত্রিশ", "তেত্রিশ", "চৌত্রিশ", "পঁয়ত্রিশ", "ছত্রিশ", "সাঁইত্রিশ", "আটত্রিশ", "ঊনচল্লিশ", "চল্লিশ",
+        "একচল্লিশ", "বিয়াল্লিশ", "তেতাল্লিশ", "চুয়াল্লিশ", "পঁয়তাল্লিশ", "ছেচল্লিশ", "সাতচল্লিশ", "আটচল্লিশ", "ঊনপঞ্চাশ", "পঞ্চাশ",
+        "একান্ন", "বায়ান্ন", "তিপ্পান্ন", "চুয়ান্ন", "পঞ্চান্ন", "ছাপ্পান্ন", "সাতান্ন", "আটান্ন", "ঊনষাট", "ষাট",
+        "একষট্টি", "বাষট্টি", "তেষট্টি", "চৌষট্টি", "পঁয়ষট্টি", "ছেষট্টি", "সাতষট্টি", "আটষট্টি", "ঊনসত্তর", "সত্তর",
+        "একাত্তর", "বাহাত্তর", "তিয়াত্তর", "চুয়াত্তর", "পঁচাত্তর", "ছিয়াত্তর", "সাতাত্তর", "আটাত্তর", "ঊনআশি", "আশি",
+        "একাশি", "বিরাশি", "তিরাশি", "চুরাশি", "পঁচাশি", "ছিয়াশি", "সাতাশি", "অষ্টাশি", "ঊননব্বই", "নব্বই",
+        "একানব্বই", "বিরানব্বই", "তিরানব্বই", "চুরানব্বই", "পঁচানব্বই", "ছিয়ানব্বই", "সাতানব্বই", "আটানব্বই", "নিরানব্বই"
+    ];
+
+    // সংখ্যাকে কথায় রূপান্তরের ফাংশন
+    function convertNumberToBanglaWords(num) {
+        if (num === 0) return "শূন্য টাকা মাত্র";
+        if (num > 999999999) return "অঙ্কটি অনেক বড়";
+        
+        let str = "";
+        let crore = Math.floor(num / 10000000);
+        let lakh = Math.floor((num % 10000000) / 100000);
+        let thousand = Math.floor((num % 100000) / 1000);
+        let hundred = Math.floor((num % 1000) / 100);
+        let rest = num % 100;
+        
+        if (crore > 0) str += banglaWords[crore] + " কোটি ";
+        if (lakh > 0) str += banglaWords[lakh] + " লাখ ";
+        if (thousand > 0) str += banglaWords[thousand] + " হাজার ";
+        if (hundred > 0) str += banglaWords[hundred] + " শত ";
+        if (rest > 0) str += banglaWords[rest] + " ";
+        
+        return str.trim() + " টাকা মাত্র";
+    }
+
+    // টাইপ করার সাথে সাথে কথায় রূপান্তর
+    document.getElementById('amount').addEventListener('input', function() {
+        const num = parseInt(this.value);
+        const wordsField = document.getElementById('amountWords');
+        if (isNaN(num) || num <= 0) { wordsField.value = ""; } 
+        else { wordsField.value = convertNumberToBanglaWords(num); }
+    });
+
+    // ডিফল্ট আজকের তারিখ
+    document.getElementById('date').valueAsDate = new Date();
+
+    // ফর্ম সাবমিট
+    document.getElementById('receiptForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // রিসিট নং জেনারেট (REC-2024-XXXX)
+        const dateObj = new Date();
+        const year = dateObj.getFullYear();
+        const randomStr = Math.floor(1000 + Math.random() * 9000);
+        const receiptNo = `REC-${year}-${randomStr}`;
+
+        // ডেটা বসানো
+        document.getElementById('r-receiptNo').innerText = receiptNo;
+        
+        // তারিখ ফরমেট করা (DD-MM-YYYY)
+        const rawDate = document.getElementById('date').value.split('-');
+        const formattedDate = `${rawDate[2]}-${rawDate[1]}-${rawDate[0]}`;
+        document.getElementById('r-date').innerText = formattedDate;
+
+        document.getElementById('r-memberId').innerText = document.getElementById('memberId').value;
+        document.getElementById('r-name').innerText = document.getElementById('name').value;
+        document.getElementById('r-address').innerText = document.getElementById('address').value;
+        document.getElementById('r-category').innerText = document.getElementById('category').value;
+        
+        // টাকার পরিমাণে কমা বসানো (যেমন 5,000)
+        const amountNum = Number(document.getElementById('amount').value);
+        document.getElementById('r-amount').innerText = amountNum.toLocaleString('en-IN') + " টাকা";
+        
+        document.getElementById('r-amountWords').innerText = document.getElementById('amountWords').value;
+
+        // ভিউ পরিবর্তন
+        document.getElementById('form-container').classList.add('hidden');
+        document.getElementById('receipt-container').classList.remove('hidden');
+    });
+
+    // এডিট ফর্ম
+    function editForm() {
+        document.getElementById('receipt-container').classList.add('hidden');
+        document.getElementById('form-container').classList.remove('hidden');
+    }
+
+    // পিডিএফ ডাউনলোড
+    function downloadPDF() {
+        const element = document.getElementById('receipt-section');
+        const receiptNo = document.getElementById('r-receiptNo').innerText;
+        
+        const opt = {
+            margin:       [0.5, 0.5, 0.5, 0.5],
+            filename:     'Payment_Receipt_' + receiptNo + '.pdf',
+            image:        { type: 'jpeg', quality: 1 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // বাটন লুকানো লাগবে না কারণ আমরা শুধুমাত্র receipt-section কে প্রিন্ট করছি
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+
+</body>
+</html>
