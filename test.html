@@ -103,7 +103,6 @@
             cursor: not-allowed;
         }
 
-        /* চেকবক্স স্টাইল */
         .checkbox-group {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -155,13 +154,32 @@
 
         .hidden { display: none !important; }
 
-        /* রিসিট ডিজাইন */
+        /* রিসিট ডিজাইন ও জলছাপ (Watermark) */
         #receipt-section {
             background: #fff;
             padding: 50px;
             border: 1px solid #d1d5db;
             border-radius: 4px;
             position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* জলছাপের CSS */
+        #receipt-section::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            background-image: url('logo.png'); /* লোগো ফাইলটি এখান থেকে পাবে */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.08; /* জলছাপের স্বচ্ছতা */
+            z-index: -1;
         }
 
         .receipt-header {
@@ -257,7 +275,7 @@
 
         .signatures {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* শুধু একটি স্বাক্ষর ডানপাশে দেখানোর জন্য */
             margin-top: 50px;
         }
 
@@ -312,7 +330,7 @@
             .receipt-header { flex-direction: column; text-align: center; }
             .receipt-header-right { text-align: center; margin-top: 15px; }
             .receipt-meta { flex-direction: column; gap: 10px; text-align: center; }
-            .signatures { flex-direction: column; gap: 40px; align-items: center; }
+            .signatures { justify-content: center; }
         }
     </style>
 </head>
@@ -341,7 +359,6 @@
                 <input type="text" id="address" required placeholder="বর্তমান ঠিকানা">
             </div>
             
-            <!-- চেকবক্স খাত সেকশন -->
             <div class="form-group full-width">
                 <label class="field-label">জমার খাত (একাধিক নির্বাচন করা যাবে)</label>
                 <div class="checkbox-group">
@@ -382,8 +399,8 @@
     <div id="receipt-section">
         <div class="receipt-header">
             <div class="receipt-header-left">
-                <!-- গুগল ড্রাইভ থেকে যুক্ত করা লোগো -->
-                <img src="https://drive.google.com/uc?id=1RaFbbO9g139p_CAVp3S-w9FD13gnA4T6" crossorigin="anonymous" alt="Logo" id="company-logo">
+                <!-- লোকাল ফোল্ডার থেকে লোগো লোড হবে -->
+                <img src="logo.png" alt="Logo" id="company-logo">
             </div>
             <div class="receipt-header-right">
                 <h1>আপনার প্রতিষ্ঠানের নাম</h1>
@@ -425,13 +442,8 @@
 
         <div class="signatures">
             <div class="sig-box">
-                <!-- গুগল ড্রাইভ থেকে যুক্ত করা আদায়কারীর স্বাক্ষর -->
-                <img src="https://drive.google.com/uc?id=1tnFYZ4UY1QWf5hJo_4ec-Na1zs3Yhtos" crossorigin="anonymous" alt="Collector" id="sign-collector">
-                <div class="sig-line">আদায়কারীর স্বাক্ষর</div>
-            </div>
-            <div class="sig-box">
-                <!-- গুগল ড্রাইভ থেকে যুক্ত করা অনুমোদনকারীর স্বাক্ষর -->
-                <img src="https://drive.google.com/uc?id=1oa3jVQXc5qnI2y5hcxjnyUdUOdWCkKde" crossorigin="anonymous" alt="Approver" id="sign-approver">
+                <!-- লোকাল ফোল্ডার থেকে স্বাক্ষর লোড হবে -->
+                <img src="sign.png" alt="Approver" id="sign-approver">
                 <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
             </div>
         </div>
@@ -448,7 +460,7 @@
         "একান্ন", "বায়ান্ন", "তিপ্পান্ন", "চুয়ান্ন", "পঞ্চান্ন", "ছাপ্পান্ন", "সাতান্ন", "আটান্ন", "ঊনষাট", "ষাট",
         "একষট্টি", "বাষট্টি", "তেষট্টি", "চৌষট্টি", "পঁয়ষট্টি", "ছেষট্টি", "সাতষট্টি", "আটষট্টি", "ঊনসত্তর", "সত্তর",
         "একাত্তর", "বাহাত্তর", "তিয়াত্তর", "চুয়াত্তর", "পঁচাত্তর", "ছিয়াত্তর", "সাতাত্তর", "আটাত্তর", "ঊনআশি", "আশি",
-        "একাশি", "বিরাশি", "তিরাশি", "চুরাশি", "পঁচাশি", "ছিয়াশি", "সাতাশি", "অষ্টাশি", "ঊননব্বই", "নব্বই",
+        "একাশি", "বিরাশি", "তিরাশি", "চuraশি", "পঁচাশি", "ছিয়াশি", "সাতাশি", "অষ্টাশি", "ঊননব্বই", "নব্বই",
         "একানব্বই", "বিরানব্বই", "তিরানব্বই", "চুরানব্বই", "পঁচানব্বই", "ছিয়ানব্বই", "সাতানব্বই", "আটানব্বই", "নিরানব্বই"
     ];
 
@@ -484,7 +496,6 @@
     document.getElementById('receiptForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // চেকবক্স ভ্যালিডেশন এবং ডেটা সংগ্রহ
         const checkboxes = document.querySelectorAll('input[name="category"]:checked');
         if(checkboxes.length === 0) {
             alert("অনুগ্রহ করে অন্তত একটি জমার খাত নির্বাচন করুন!");
@@ -512,7 +523,6 @@
         document.getElementById('r-name').innerText = document.getElementById('name').value;
         document.getElementById('r-address').innerText = document.getElementById('address').value;
         
-        // রিসিটে চেকবক্সের ডেটা বসানো
         document.getElementById('r-category').innerText = categoryText;
         
         const amountNum = Number(document.getElementById('amount').value);
