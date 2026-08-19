@@ -9,7 +9,6 @@
     
     <style>
         :root {
-            /* সম্পূর্ণ সবুজ থিম */
             --primary-color: #15803d;
             --accent-color: #22c55e;
             --success-color: #16a34a;
@@ -17,6 +16,11 @@
             --text-main: #1f2937;
             --text-muted: #4b5563;
             --border-color: #d1d5db;
+        }
+
+        /* সমস্ত এলিমেন্টের বর্ডার যেন সাইজের ভেতরেই থাকে */
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
@@ -82,7 +86,6 @@
             padding: 12px 16px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
-            box-sizing: border-box;
             font-size: 16px;
             font-family: 'Hind Siliguri', sans-serif;
             transition: all 0.3s ease;
@@ -163,18 +166,20 @@
             border-radius: 4px;
             position: relative;
             z-index: 1;
+            overflow: hidden;
+            width: 100%;
         }
 
-        /* ওয়াটারমার্ক ফিক্স করা হয়েছে যেন সম্পূর্ণ দেখা যায় */
         #receipt-section::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
             background-image: url('logodif.png'); 
-            background-size: 350px auto; /* আনুপাতিকভাবে ফিট হবে */
+            background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             opacity: 0.08; 
@@ -252,8 +257,7 @@
         }
 
         .receipt-table th, .receipt-table td {
-            /* লেখা কেটে যাওয়া রোধ করতে প্যাডিং বাড়ানো হয়েছে */
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-bottom: 1px solid var(--border-color);
             text-align: left;
         }
@@ -268,7 +272,6 @@
         .receipt-table td {
             font-weight: 500;
             color: var(--text-main);
-            /* html2canvas এর ফার্স্ট লেটার কাটার বাগ ফিক্স */
             text-indent: 2px;
         }
 
@@ -291,11 +294,10 @@
 
         .amount-words-box strong { color: var(--primary-color); }
 
-        /* স্বাক্ষর সব সময় ডানপাশে রাখতে !important ব্যবহার করা হয়েছে */
         .signatures {
             display: flex;
             justify-content: flex-end !important; 
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .sig-box {
@@ -342,7 +344,6 @@
         .btn-edit { background: #ef4444; color: white; }
         .btn-edit:hover { background: #dc2626; transform: translateY(-2px); }
 
-        /* মোবাইল স্ক্রিনে শুধুমাত্র ফর্মের পরিবর্তন হবে, রিসিট একই থাকবে */
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .form-group.full-width { grid-column: 1; }
@@ -373,7 +374,6 @@
                 <label class="field-label">সদস্যের আইডি ও নাম <span style="color:red;">*</span></label>
                 <select id="memberSelect" required>
                     <option value="" disabled selected>তালিকা থেকে সদস্য নির্বাচন করুন</option>
-                    <!-- জাভাস্ক্রিপ্ট দ্বারা অপশনগুলো যুক্ত হবে -->
                 </select>
             </div>
             
@@ -612,16 +612,23 @@
         const element = document.getElementById('receipt-section');
         const receiptNo = document.getElementById('r-receiptNo').innerText;
         
+        // ডান পাশের বর্ডার কাটা ঠেকাতে পিডিএফ জেনারেট হওয়ার ঠিক আগে রিসিট বক্সটিকে ফিক্সড ডেস্কটপ সাইজ দেওয়া হলো
+        const originalWidth = element.style.width;
+        element.style.width = '790px'; // A4 এর স্ট্যান্ডার্ড সাইজ
+        element.style.maxWidth = 'none';
+
         const opt = {
-            margin:       [0.2, 0.3, 0.2, 0.3], 
+            margin:       0.2, 
             filename:     'Payment_Receipt_' + receiptNo + '.pdf',
             image:        { type: 'jpeg', quality: 1 },
-            // মোবাইল থেকে ডাউনলোড করলেও যেন ডেক্সটপের মতো সঠিক লেআউট থাকে তার জন্য windowWidth ফিক্স করে দেওয়া হয়েছে
-            html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+            html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
-        html2pdf().set(opt).from(element).save();
+        // পিডিএফ সেভ হওয়ার পর আবার রিসিটটিকে আগের অবস্থায় (মোবাইল ভিউ) ফিরিয়ে আনা
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.style.width = originalWidth;
+        });
     }
 </script>
 
