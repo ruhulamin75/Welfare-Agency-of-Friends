@@ -9,6 +9,7 @@
     
     <style>
         :root {
+            /* সম্পূর্ণ সবুজ থিম */
             --primary-color: #15803d;
             --accent-color: #22c55e;
             --success-color: #16a34a;
@@ -18,7 +19,6 @@
             --border-color: #d1d5db;
         }
 
-        /* সমস্ত এলিমেন্টের বর্ডার যেন সাইজের ভেতরেই থাকে */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -158,12 +158,19 @@
 
         .hidden { display: none !important; }
 
-        /* রিসিট ডিজাইন */
+        /* পিডিএফ জেনারেট করার জন্য নতুন বাফার র‍্যাপার */
+        #pdf-wrapper {
+            background: #fff;
+            padding: 15px; /* বর্ডারের চারপাশে ১৫ পিক্সেল ফাঁকা জায়গা, যেন বর্ডার না কাটে */
+            width: 100%;
+        }
+
+        /* রিসিট ডিজাইন (রাউন্ড বর্ডার যুক্ত) */
         #receipt-section {
             background: #fff;
             padding: 30px 40px; 
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
+            border: 2px solid var(--primary-color); /* গাঢ় সবুজ রঙের বর্ডার */
+            border-radius: 16px; /* সব সাইডে সুন্দর রাউন্ড আকার */
             position: relative;
             z-index: 1;
             overflow: hidden;
@@ -419,61 +426,64 @@
         </button>
     </div>
     
-    <div id="receipt-section">
-        <div class="receipt-header">
-            <div class="receipt-header-left">
-                <img src="logodif.png" alt="Logo" id="company-logo">
+    <!-- পিডিএফ জেনারেট করার সময় এই pdf-wrapper টি টার্গেট করা হবে -->
+    <div id="pdf-wrapper">
+        <div id="receipt-section">
+            <div class="receipt-header">
+                <div class="receipt-header-left">
+                    <img src="logodif.png" alt="Logo" id="company-logo">
+                </div>
+                <div class="receipt-header-right">
+                    <h1>দারুল ইত্তিহাদ ফাউন্ডেশন</h1>
+                    <p>নয়নপুর, কসবা, ব্রাহ্মণবাড়িয়া<br>ফোন: +৮৮০ ১৯২৫-৩০৬০০৪<br>ইমেইল: darulittihadfoundation@gmail.com</p>
+                </div>
             </div>
-            <div class="receipt-header-right">
-                <h1>দারুল ইত্তিহাদ ফাউন্ডেশন</h1>
-                <p>নয়নপুর, কসবা, ব্রাহ্মণবাড়িয়া<br>ফোন: +৮৮০ ১৯২৫-৩০৬০০৪<br>ইমেইল: darulittihadfoundation@gmail.com</p>
+
+            <div class="receipt-title">
+                <span>টাকা জমার রিসিট</span>
             </div>
-        </div>
 
-        <div class="receipt-title">
-            <span>টাকা জমার রিসিট</span>
-        </div>
+            <div class="receipt-meta">
+                <div class="meta-item">রিসিট নং: <span id="r-receiptNo"></span></div>
+                <div class="meta-item">তারিখ: <span id="r-date"></span></div>
+            </div>
 
-        <div class="receipt-meta">
-            <div class="meta-item">রিসিট নং: <span id="r-receiptNo"></span></div>
-            <div class="meta-item">তারিখ: <span id="r-date"></span></div>
-        </div>
+            <table class="receipt-table">
+                <tr>
+                    <th>সদস্যের আইডি</th>
+                    <td id="r-memberId"></td>
+                </tr>
+                <tr>
+                    <th>প্রদানকারীর নাম</th>
+                    <td id="r-name"></td>
+                </tr>
+                <tr>
+                    <th>ঠিকানা</th>
+                    <td id="r-address"></td>
+                </tr>
+                <tr>
+                    <th>জমার খাত</th>
+                    <td id="r-category"></td>
+                </tr>
+                <tr>
+                    <th>বিবরণ</th>
+                    <td id="r-description"></td>
+                </tr>
+                <tr class="amount-row">
+                    <th>মোট টাকার পরিমাণ</th>
+                    <td id="r-amount"></td>
+                </tr>
+            </table>
+            
+            <div class="amount-words-box">
+                <strong>কথায়: </strong> <span id="r-amountWords"></span>
+            </div>
 
-        <table class="receipt-table">
-            <tr>
-                <th>সদস্যের আইডি</th>
-                <td id="r-memberId"></td>
-            </tr>
-            <tr>
-                <th>প্রদানকারীর নাম</th>
-                <td id="r-name"></td>
-            </tr>
-            <tr>
-                <th>ঠিকানা</th>
-                <td id="r-address"></td>
-            </tr>
-            <tr>
-                <th>জমার খাত</th>
-                <td id="r-category"></td>
-            </tr>
-            <tr>
-                <th>বিবরণ</th>
-                <td id="r-description"></td>
-            </tr>
-            <tr class="amount-row">
-                <th>মোট টাকার পরিমাণ</th>
-                <td id="r-amount"></td>
-            </tr>
-        </table>
-        
-        <div class="amount-words-box">
-            <strong>কথায়: </strong> <span id="r-amountWords"></span>
-        </div>
-
-        <div class="signatures">
-            <div class="sig-box">
-                <img src="sign.png" alt="Approver" id="sign-approver">
-                <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
+            <div class="signatures">
+                <div class="sig-box">
+                    <img src="sign.png" alt="Approver" id="sign-approver">
+                    <div class="sig-line">অনুমোদনকারীর স্বাক্ষর</div>
+                </div>
             </div>
         </div>
     </div>
@@ -609,23 +619,21 @@
     }
 
     function downloadPDF() {
-        const element = document.getElementById('receipt-section');
+        // এবার আমরা ভেতরের receipt-section এর বদলে বাইরের pdf-wrapper কে টার্গেট করছি
+        const element = document.getElementById('pdf-wrapper');
         const receiptNo = document.getElementById('r-receiptNo').innerText;
         
-        // ডান পাশের বর্ডার কাটা ঠেকাতে পিডিএফ জেনারেট হওয়ার ঠিক আগে রিসিট বক্সটিকে ফিক্সড ডেস্কটপ সাইজ দেওয়া হলো
         const originalWidth = element.style.width;
-        element.style.width = '790px'; // A4 এর স্ট্যান্ডার্ড সাইজ
-        element.style.maxWidth = 'none';
+        element.style.width = '800px'; 
 
         const opt = {
-            margin:       0.2, 
+            margin:       0, // মার্জিন ০ রাখা হলো কারণ pdf-wrapper এ ১৫ পিক্সেল প্যাডিং দেওয়া আছে
             filename:     'Payment_Receipt_' + receiptNo + '.pdf',
             image:        { type: 'jpeg', quality: 1 },
             html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
-        // পিডিএফ সেভ হওয়ার পর আবার রিসিটটিকে আগের অবস্থায় (মোবাইল ভিউ) ফিরিয়ে আনা
         html2pdf().set(opt).from(element).save().then(() => {
             element.style.width = originalWidth;
         });
