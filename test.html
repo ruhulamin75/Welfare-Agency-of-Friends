@@ -155,7 +155,7 @@
 
         .hidden { display: none !important; }
 
-        /* রিসিট ডিজাইন (এক পেজে ফিট করার জন্য) */
+        /* রিসিট ডিজাইন */
         #receipt-section {
             background: #fff;
             padding: 30px 40px; 
@@ -163,19 +163,18 @@
             border-radius: 4px;
             position: relative;
             z-index: 1;
-            overflow: hidden;
         }
 
+        /* ওয়াটারমার্ক ফিক্স করা হয়েছে যেন সম্পূর্ণ দেখা যায় */
         #receipt-section::before {
             content: "";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url('logodif.png'); 
-            background-size: contain;
+            background-size: 350px auto; /* আনুপাতিকভাবে ফিট হবে */
             background-repeat: no-repeat;
             background-position: center;
             opacity: 0.08; 
@@ -253,7 +252,8 @@
         }
 
         .receipt-table th, .receipt-table td {
-            padding: 10px 15px;
+            /* লেখা কেটে যাওয়া রোধ করতে প্যাডিং বাড়ানো হয়েছে */
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border-color);
             text-align: left;
         }
@@ -268,6 +268,8 @@
         .receipt-table td {
             font-weight: 500;
             color: var(--text-main);
+            /* html2canvas এর ফার্স্ট লেটার কাটার বাগ ফিক্স */
+            text-indent: 2px;
         }
 
         .amount-row td {
@@ -289,10 +291,11 @@
 
         .amount-words-box strong { color: var(--primary-color); }
 
+        /* স্বাক্ষর সব সময় ডানপাশে রাখতে !important ব্যবহার করা হয়েছে */
         .signatures {
             display: flex;
-            justify-content: flex-end; 
-            margin-top: 30px;
+            justify-content: flex-end !important; 
+            margin-top: 40px;
         }
 
         .sig-box {
@@ -339,6 +342,7 @@
         .btn-edit { background: #ef4444; color: white; }
         .btn-edit:hover { background: #dc2626; transform: translateY(-2px); }
 
+        /* মোবাইল স্ক্রিনে শুধুমাত্র ফর্মের পরিবর্তন হবে, রিসিট একই থাকবে */
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .form-group.full-width { grid-column: 1; }
@@ -346,7 +350,6 @@
             .receipt-header { flex-direction: column; text-align: center; }
             .receipt-header-right { text-align: center; margin-top: 15px; }
             .receipt-meta { flex-direction: column; gap: 10px; text-align: center; }
-            .signatures { justify-content: center; }
         }
     </style>
 </head>
@@ -477,32 +480,28 @@
 </div>
 
 <script>
-    // সদস্যের নামের তালিকা
     const memberNames = [
-        "মোহাম্মদ রহমত উল্লাহ", "সাইফুল ইসলাম", "রাসেল রানা", "মোঃ আনিসুর রহমান", "মোহাম্মদ রুহুল আমিন",
-        "রুহুল আমিন", "কাজী মেহেদী হাসান সানি", "মোঃ শাফায়েত হোসেন", "রকিবুল ইসলাম", "মোঃ রিয়াদুল ইসলাম",
-        "কাজী মোঃ মোমিনুল ইসলাম", "মোহাম্মদ সামিউম বাছির", "জীবন মিয়া", "মোঃ পাবেল শেখ", "মোহাম্মদ আমির হোসেন",
+        "মোহাম্মদ রহমত উল্লাহ", "শিফুল ইসলাম", "রাসেল রানা", "মোঃ আনিসুর রহমান", "মোহাম্মদ রুহুল আমিন",
+        "রুহুল আমিন", "কাজী মেহেদী হাসান সানি", "মোঃ সাফায়েত হোসেন", "রকিবুল ইসলাম", "মোঃ রিয়াদুল ইসলাম",
+        "কাজী মোঃ মোমিনুল ইসলাম", "মোহাম্মদ সামিউম বাসির", "জীবন মিয়া", "মোঃ পাবেল শেখ", "মোহাম্মদ আমির হোসেন",
         "সাইফুল ইসলাম ইরফান", "মোছাঃ মাহমুদা আক্তার", "মোঃ নিয়ামত মির্জা", "মোঃ ফয়সাল আহমেদ", "মোঃ রিমন",
-        "রমজান হোসেন", "মোঃ মাসুম মিয়া", "আল আমিন (প্রবাসী)", "জুবায়ের", "তোফায়েল হোসেন",
+        "রমজান হোসেন", "মোঃ মাসুম মিয়া", "আল আমিন (পি)", "জুবায়ের", "তোফায়েল হোসেন",
         "হাফিজুর রহমান (সুমন)", "আরিফ", "ইসরাফিল", "আল আমিন হোসেন", "সানজিদা আক্তার",
-        "আল আমিন (ব্যবসায়ী)", "ফয়সাল আহমেদ", "মোঃ হৃদয় মিয়া", "জিসান", "নুরুল ইসলাম",
+        "আল আমিন (বি)", "ফয়সাল আহমেদ", "মোঃ হৃদয় মিয়া", "জিসান", "নুরুল ইসলাম",
         "মোঃ মিরাজ হোসেন", "পারভেজ মিয়া", "কাওসার আলম", "মোঃ রাসেল", "খাদিজাতুল ইনতে আয়রা"
     ];
 
-    // ইংরেজি সংখ্যাকে বাংলা সংখ্যায় রূপান্তর
     function toBanglaNumber(num) {
         const engToBng = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯' };
         return num.toString().split('').map(digit => engToBng[digit] || digit).join('');
     }
 
-    // ড্রপডাউনে অপশন যুক্ত করা
     const memberSelect = document.getElementById('memberSelect');
     memberNames.forEach((name, index) => {
         let idStr = (index + 1).toString().padStart(2, '0');
         let banglaIdStr = toBanglaNumber(idStr);
         
         let option = document.createElement('option');
-        // value এর মধ্যে আইডি এবং নাম একসাথে রাখা হলো যেন পরে আলাদা করা যায়
         option.value = `${banglaIdStr}|${name}`;
         option.text = `${banglaIdStr} - ${name}`;
         memberSelect.appendChild(option);
@@ -581,7 +580,6 @@
         const formattedDate = `${rawDate[2]}-${rawDate[1]}-${rawDate[0]}`;
         document.getElementById('r-date').innerText = formattedDate;
 
-        // ড্রপডাউন থেকে আইডি এবং নাম আলাদা করে রিসিটে বসানো
         const selectedMemberData = document.getElementById('memberSelect').value.split('|');
         const selectedId = selectedMemberData[0];
         const selectedName = selectedMemberData[1];
@@ -618,7 +616,8 @@
             margin:       [0.2, 0.3, 0.2, 0.3], 
             filename:     'Payment_Receipt_' + receiptNo + '.pdf',
             image:        { type: 'jpeg', quality: 1 },
-            html2canvas:  { scale: 2, useCORS: true },
+            // মোবাইল থেকে ডাউনলোড করলেও যেন ডেক্সটপের মতো সঠিক লেআউট থাকে তার জন্য windowWidth ফিক্স করে দেওয়া হয়েছে
+            html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
